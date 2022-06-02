@@ -51,15 +51,30 @@ int APIENTRY wWinMain(
         return FALSE;
     }
 
+    //단축키
+    //단축키 테이블에 존재하는 값을 불러옴
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLIENT));
 
+    //메시지 구조체
     MSG msg;
 
+    // 메세지 큐
+    // 프로세스는 메세지 큐를 os로부터 받음 -> 프로세스가 메시지 온 순서대로 처리함
+    // 그림판에서 마우스 클릭 -> 그리기 / 워드파일에서 클릭 -> 커서 이동
+    // 포커스 된 창에 대해서 메시지를 보냄
+    
+    // GetMessage -> 프로세스가 받은 메시지를 꺼내보는 함수임
+    // 메시지 큐에서 메시지를 찾을 때 까지 대기함
+    // 메시지 타입이 WM_QUIT(종료) 일때만 false 반환, 그 외에는 무조건 true 반환함
+    
     // 기본 메시지 루프입니다:
-    while (GetMessage(&msg, nullptr, 0, 0))
+    while (GetMessage(&msg, nullptr, 0, 0)) //WM_QUIT 메시지가 올 때 까지 무한루프 -> 프로그램 종료까지 무한 반복
     {
+        //단축키 테이블에 존재하는 키를 누르면, 특정 메뉴를 불러오거나 동작 수행 -> 잘안씀
+        //msg.hwnd -> 메시지가 발생한 윈도우를 뜻함 -> 한 프로세스에 윈도우가 여러개 일 수도 있기에, 명확히 구분
         if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
         {
+            //메시지를 처리하는 동작
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
@@ -83,6 +98,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbSize = sizeof(WNDCLASSEX);
 
     wcex.style          = CS_HREDRAW | CS_VREDRAW;
+    //윈도우 프로시저 -> 함수 포인터로 받아서 미리 세팅
     wcex.lpfnWndProc    = WndProc;
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
@@ -165,6 +181,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+
+            //100x100 pixel의 사각형 그리기 동작
+            Rectangle(hdc, 10, 10, 110, 110);
             EndPaint(hWnd, &ps);
         }
         break;
