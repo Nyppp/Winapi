@@ -131,6 +131,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
    //레지스터클래스에서 전달받은 szWindowClass 키값을 통해 창 구성을 설정함
+   //윈도우 핸들은 커널 레벨에서 os가 직접 관리하는 객체임 -> 객체 정보를 직접 접근하거나, 알 수 없음
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
@@ -176,14 +177,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+    //윈도우에 무효화 영역(invalidate Rect)이 발생한 경우 실행 -> 창을 최소화 했다가 켰을 때
+    //창이 가려지는 경우는 윈도우가 비트맵 형태로 따로 저장하기 때문에 wm_paint를 호출하지 않음
     case WM_PAINT:
-        {
+        { //switch - case에서 case내부에 지역변수를 만들 때는 괄호 써야함
             PAINTSTRUCT ps;
+            //커널 수준 객체인 device context 객체 생성
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
 
-            //100x100 pixel의 사각형 그리기 동작
+            //윈도우 핸들
+            //윈도우 좌표
+            //hdc
+
+            //100x100 pixel의 사각형 그리기 동작을 윈도우 10,10 위치에서 그림
             Rectangle(hdc, 10, 10, 110, 110);
+
             EndPaint(hWnd, &ps);
         }
         break;
