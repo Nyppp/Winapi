@@ -132,6 +132,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    //레지스터클래스에서 전달받은 szWindowClass 키값을 통해 창 구성을 설정함
    //윈도우 핸들은 커널 레벨에서 os가 직접 관리하는 객체임 -> 객체 정보를 직접 접근하거나, 알 수 없음
+   //hwnd == window 아이디
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
@@ -156,6 +157,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
 //
 //
+
+//마우스 좌표
+POINT g_ptObjectPos = { 500,300 };
+POINT g_ptObjectScale = { 100,100 };
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
@@ -182,20 +188,95 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_PAINT:
         { //switch - case에서 case내부에 지역변수를 만들 때는 괄호 써야함
             PAINTSTRUCT ps;
-            //커널 수준 객체인 device context 객체 생성
-            HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+            //커널 수준 객체인 device context 객체 생성(그리기)
+            //struct __HDC 구조체를 생성, 내부에는 int가 한개 있음
+            //핸들값을 타입에 따라 나눈 이유 -> 기능을 구별하기 위해서.
+            //HPEN, HBRUSH 등 서로 모두 INT 하나로 구분되지만 서로 다른 타입으로 인지됨
+            HDC hdc = BeginPaint(hWnd, &ps); //device context 만들고 id반환
 
+            //device context : 그리기 작업을 수행하는 데 필요한 데이터 집합체
+            //device context의 목적지는 hwnd
+            //펜 기본값 : black, 브러쉬는 기본 브러쉬 white
+            
             //윈도우 핸들
-            //윈도우 좌표
             //hdc
 
+            //selectobject는 dc에 특정 핸들값을 넣어서 바꾸면, 그 핸들값이 반환됨
+            //하지만 리턴 타입이 void 포인터이기 떄문에 형변환이 필요함(뭘 넣든 반환한다는 뜻)
+            HPEN hRedPen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
+            HBRUSH hBlueBrush = CreateSolidBrush(RGB(0, 0, 255));
+            //getStockObject -> 미리 만들어진 자주 쓰는 펜, 브러쉬 커널오브젝트
+
+            //기본 데이터들의 id를 받아둔다.
+            HPEN hDefaultPen = (HPEN)SelectObject(hdc, hRedPen);
+            HBRUSH hDefaultBrush = (HBRUSH)SelectObject(hdc, hBlueBrush);
+
             //100x100 pixel의 사각형 그리기 동작을 윈도우 10,10 위치에서 그림
-            Rectangle(hdc, 10, 10, 110, 110);
+            //device context가 현재 윈도우를 목적으로 하기에, 우리가 띄운 윈도우에 그려짐
+            Rectangle(hdc, 
+                g_ptObjectPos.x - g_ptObjectScale.x/2, 
+                g_ptObjectPos.y - g_ptObjectScale.y/2,
+                g_ptObjectPos.x + g_ptObjectScale.x / 2,
+                g_ptObjectPos.y + g_ptObjectScale.y / 2);
+
+            //받아둔 id를 통해 다시 기본값으로 불러옴
+            SelectObject(hdc, hDefaultPen);
+            SelectObject(hdc, hDefaultBrush);
+
+            //커널 오브젝트 삭제 요청
+            DeleteObject(hRedPen);
+            DeleteObject(hDefaultBrush);
 
             EndPaint(hWnd, &ps);
         }
         break;
+
+    //키가 눌렸을 때의 처리
+    case WM_KEYDOWN:
+    {
+        //wParam = 키보드가 눌린 값이 16진수로 들어옴
+        switch (wParam)
+        {
+        case VK_UP:
+            g_ptObjectPos.y -= 10;
+            InvalidateRect(hWnd, nullptr, true);
+            break;
+
+        case VK_DOWN:
+            g_ptObjectPos.y += 10;
+            InvalidateRect(hWnd, nullptr, true);
+            break;
+
+        case VK_LEFT:
+            g_ptObjectPos.x -= 10;
+            InvalidateRect(hWnd, nullptr, true);
+            break;
+
+        case VK_RIGHT:
+            g_ptObjectPos.x += 10;
+            InvalidateRect(hWnd, nullptr, true);
+            break;
+        }
+    }
+        break;
+
+    //왼쪽 마우스가 눌렸을 때의 처리
+    case WM_LBUTTONDOWN:
+    {
+        //lParam은 마우스 좌표를 반환해줌 -> long 타입으로 4바이트,
+        //row, col에 대해 서로 2바이트씩 가져가서 표현을 해주는 것임
+
+        //g_x = LOWORD(lParam); //마우스 좌표 X값을 가져오는 매크로 
+        //g_y = HIWORD(lParam); //Y값을 가져오는 매크로-> 2바이트로 나누어졌기에, 16비트만큼 땡겨서 가져온다.
+        g_ptObjectPos.x = LOWORD(lParam);
+        g_ptObjectPos.y = HIWORD(lParam);
+
+        //무효화 영역을 직접 설정하는 함수 -> 윈도우를 다시 그림
+        InvalidateRect(hWnd, nullptr, true);
+
+        break;
+    }
+    
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
