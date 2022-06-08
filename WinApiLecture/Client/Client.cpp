@@ -9,6 +9,7 @@
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 //WCHAR = wchar_t를 이름만 바꾼것임
+HWND g_hwnd;
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 
@@ -58,6 +59,10 @@ int APIENTRY wWinMain(
     //메시지 구조체
     MSG msg;
 
+    //타이머를 설정하면, x초에 한번씩 타이머가 수행됨
+    //0번 타이머 생성, 0프레임마다 nullptr 위치에 오는 함수를 수행
+    SetTimer(g_hwnd, 0, 0, nullptr); 
+
     // 메세지 큐
     // 프로세스는 메세지 큐를 os로부터 받음 -> 프로세스가 메시지 온 순서대로 처리함
     // 그림판에서 마우스 클릭 -> 그리기 / 워드파일에서 클릭 -> 커서 이동
@@ -79,6 +84,10 @@ int APIENTRY wWinMain(
             DispatchMessage(&msg);
         }
     }
+    
+    //느리고, 비효율적임 -> 윈도우 os기반 처리를 최소한으로 사용해야함
+    //윈도우의 메시지 처리 방법은 느리기 때문 -> 메시지 Peek 사용
+    //KillTimer(g_hwnd, 0);
 
     return (int) msg.wParam;
     // 프로세스가 꼭 윈도우를 가지는건 아니며, 윈도우가 없어도 프로세스가 존재할 수 있음 ( 프로세스 != 윈도우 )
@@ -133,16 +142,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    //레지스터클래스에서 전달받은 szWindowClass 키값을 통해 창 구성을 설정함
    //윈도우 핸들은 커널 레벨에서 os가 직접 관리하는 객체임 -> 객체 정보를 직접 접근하거나, 알 수 없음
    //hwnd == window 아이디
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+   g_hwnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
-   if (!hWnd)
+   if (!g_hwnd)
    {
       return FALSE;
    }
 
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
+   ShowWindow(g_hwnd, nCmdShow);
+   UpdateWindow(g_hwnd);
 
    return TRUE;
 }
@@ -158,9 +167,27 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 //
 
-//마우스 좌표
-POINT g_ptObjectPos = { 500,300 };
-POINT g_ptObjectScale = { 100,100 };
+#include <vector>
+using std::vector;
+
+//마우스좌표를 담는 구조체
+struct tObjInfo
+{
+    //마우스 좌표
+    POINT g_ptObjectPos;
+    POINT g_ptObjectScale;
+};
+
+//모든 오브젝트들의 좌표를 저장하는 벡터
+vector<tObjInfo> g_vecInfo;
+
+//좌상단 좌표
+POINT g_ptLT;
+//우하단 좌표
+POINT g_ptRB;
+
+bool bLbtDown = false;
+
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -213,11 +240,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             //100x100 pixel의 사각형 그리기 동작을 윈도우 10,10 위치에서 그림
             //device context가 현재 윈도우를 목적으로 하기에, 우리가 띄운 윈도우에 그려짐
-            Rectangle(hdc, 
-                g_ptObjectPos.x - g_ptObjectScale.x/2, 
-                g_ptObjectPos.y - g_ptObjectScale.y/2,
-                g_ptObjectPos.x + g_ptObjectScale.x / 2,
-                g_ptObjectPos.y + g_ptObjectScale.y / 2);
+            if (bLbtDown)
+            {
+                Rectangle(hdc,
+                    g_ptLT.x,
+                    g_ptLT.y,
+                    g_ptRB.x,
+                    g_ptRB.y);
+            }
+            
+            //벡터에 저장된 모든 사각형 좌표정보를 가져와서 그린다.
+            for (size_t i = 0; i < g_vecInfo.size(); ++i)
+            {
+                Rectangle(hdc,
+                    g_vecInfo[i].g_ptObjectPos.x - g_vecInfo[i].g_ptObjectScale.x / 2,
+                    g_vecInfo[i].g_ptObjectPos.y - g_vecInfo[i].g_ptObjectScale.y / 2,
+                    g_vecInfo[i].g_ptObjectPos.x + g_vecInfo[i].g_ptObjectScale.x / 2,
+                    g_vecInfo[i].g_ptObjectPos.y + g_vecInfo[i].g_ptObjectScale.y / 2);
+            }
+
+            //이 방법은 물체마다 좌표 정보가 필요하고, 물체가 많으면
+            //반복적인 작업이 요구되며, 수 많은 물체중 하나만 움직여도 매번 다시 그려야 함
+
+            //이를 해결하는 방법
+            //렌더링 -> 매 순간 화면의 변경점을 제공하기 위해 그리는 작업
+            //프레임 -> 화면을 얼마나 자주 그려주는지에 대한 수치
 
             //받아둔 id를 통해 다시 기본값으로 불러옴
             SelectObject(hdc, hDefaultPen);
@@ -238,22 +285,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         switch (wParam)
         {
         case VK_UP:
-            g_ptObjectPos.y -= 10;
+            //g_ptObjectPos.y -= 10;
             InvalidateRect(hWnd, nullptr, true);
             break;
 
         case VK_DOWN:
-            g_ptObjectPos.y += 10;
+            //g_ptObjectPos.y += 10;
             InvalidateRect(hWnd, nullptr, true);
             break;
 
         case VK_LEFT:
-            g_ptObjectPos.x -= 10;
+            //g_ptObjectPos.x -= 10;
             InvalidateRect(hWnd, nullptr, true);
             break;
 
         case VK_RIGHT:
-            g_ptObjectPos.x += 10;
+            //g_ptObjectPos.x += 10;
             InvalidateRect(hWnd, nullptr, true);
             break;
         }
@@ -268,15 +315,49 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         //g_x = LOWORD(lParam); //마우스 좌표 X값을 가져오는 매크로 
         //g_y = HIWORD(lParam); //Y값을 가져오는 매크로-> 2바이트로 나누어졌기에, 16비트만큼 땡겨서 가져온다.
-        g_ptObjectPos.x = LOWORD(lParam);
-        g_ptObjectPos.y = HIWORD(lParam);
+        //g_ptObjectPos.x = LOWORD(lParam);
+        //g_ptObjectPos.y = HIWORD(lParam);
 
         //무효화 영역을 직접 설정하는 함수 -> 윈도우를 다시 그림
-        InvalidateRect(hWnd, nullptr, true);
-
+        //InvalidateRect(hWnd, nullptr, true);
+        g_ptLT.x = LOWORD(lParam);
+        g_ptLT.y = HIWORD(lParam);
+        bLbtDown = true;
         break;
     }
-    
+
+    //마우스가 움직일 때 처리
+    case WM_MOUSEMOVE:
+    {
+        //마우스 클릭 한 순간부터, 마우스를 움직이면 사각형이 마우스를 따라가며 그려짐
+        g_ptRB.x = LOWORD(lParam);
+        g_ptRB.y = HIWORD(lParam);
+        InvalidateRect(hWnd, nullptr, true);
+    }
+    break;
+
+    //마우스를 떼면 그려진 사각형을 저장
+    case WM_LBUTTONUP:
+    {
+        tObjInfo info = {};
+        info.g_ptObjectPos.x = (g_ptLT.x + g_ptRB.x) / 2;
+        info.g_ptObjectPos.y = (g_ptLT.y + g_ptRB.y) / 2;
+
+        info.g_ptObjectScale.x = abs(g_ptLT.x - g_ptRB.x);
+        info.g_ptObjectScale.y = abs(g_ptLT.y - g_ptRB.y);
+
+        g_vecInfo.push_back(info);
+        bLbtDown = false;
+        InvalidateRect(hWnd, nullptr, true);
+        
+    }
+    break;
+
+    case WM_TIMER:
+    {
+
+    }
+    break;
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
