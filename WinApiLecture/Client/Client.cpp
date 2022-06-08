@@ -73,15 +73,34 @@ int APIENTRY wWinMain(
     // 메시지 타입이 WM_QUIT(종료) 일때만 false 반환, 그 외에는 무조건 true 반환함
     
     // 기본 메시지 루프입니다:
-    while (GetMessage(&msg, nullptr, 0, 0)) //WM_QUIT 메시지가 올 때 까지 무한루프 -> 프로그램 종료까지 무한 반복
+    //WM_QUIT 메시지가 올 때 까지 무한루프 -> 프로그램 종료까지 무한 반복
+    while (true) 
     {
-        //단축키 테이블에 존재하는 키를 누르면, 특정 메뉴를 불러오거나 동작 수행 -> 잘안씀
-        //msg.hwnd -> 메시지가 발생한 윈도우를 뜻함 -> 한 프로세스에 윈도우가 여러개 일 수도 있기에, 명확히 구분
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+
+        //GetMessage와 PeekMessage의 차이
+        //GetMessage는 반환이 없을 경우가 있지만, PeekMessage는 반환이 항상 존재함
+        //GetMessage는 while문의 조건값에 들어갈 수 있음 -> WM_QUIT메시지가 오면 false로 와일문 종료하고, 그 외에는 true이기 때문에.
+        
+        //PeekMessage는 while문의 조건이 될 수 없음 -> 메시지가 있든 없든 값을 반환하기 때문에
+        //메시지가 있었다면 true, 없었다면 false 반환
+
+        //GetMessage와의 차이 = PeekMessage는 메시지가 없다면 메시지 처리를 대기하거나 동작을 취하지 않음
+        //메시지 대기가 없기에 더욱 효율적인 코드
+        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
-            //메시지를 처리하는 동작
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+            //들어온 메시지가 종료 메시지라면 루프탈출(PeekMessage는 메시지 내용 구분x)
+            if (msg.message == WM_QUIT)
+            {
+                break;
+            }
+            //단축키 테이블에 존재하는 키를 누르면, 특정 메뉴를 불러오거나 동작 수행 -> 잘안씀
+            //msg.hwnd -> 메시지가 발생한 윈도우를 뜻함 -> 한 프로세스에 윈도우가 여러개 일 수도 있기에, 명확히 구분
+            if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+            {
+                //메시지를 처리하는 동작
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
         }
     }
     
