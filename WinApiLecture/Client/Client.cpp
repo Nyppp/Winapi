@@ -61,7 +61,7 @@ int APIENTRY wWinMain(
 
     //타이머를 설정하면, x초에 한번씩 타이머가 수행됨
     //0번 타이머 생성, 0프레임마다 nullptr 위치에 오는 함수를 수행
-    SetTimer(g_hwnd, 0, 0, nullptr); 
+    
 
     // 메세지 큐
     // 프로세스는 메세지 큐를 os로부터 받음 -> 프로세스가 메시지 온 순서대로 처리함
@@ -74,6 +74,7 @@ int APIENTRY wWinMain(
     
     // 기본 메시지 루프입니다:
     //WM_QUIT 메시지가 올 때 까지 무한루프 -> 프로그램 종료까지 무한 반복
+    
     while (true) 
     {
 
@@ -101,6 +102,21 @@ int APIENTRY wWinMain(
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);
             }
+            //메시지 처리하는데 걸린 시간
+
+            //일반적으로 메시지 처리 시간은, 프로그램 실행 중 많은 비율을 차지하지 않는다.
+            //GetMessage 방식으로 프로그램을 짜면, 프로그램이 대부분 일을 하지 않는 상태로 대기함
+            //그렇다면, 작업이 있을 때에만 하드웨어 자원을 집중적으로 할당하는 것이 효율적인 코드임
+            //비동기 함수 사용 -> 윈도우 시스템에서 발생하는 일을 메시지 루프 도중이 아니어도 알아낼 수 있음(async)
+            //비동기 함수의 단점 -> 윈도우 포커싱이 안됐을 때도, 프로그램이 동작할 수 있음 -> 메시지 기반의 장점과 상충됨
+        }
+        else
+        {
+            //메시지가 없는 동안 호출
+
+            //메시지가 발생하지 않는 동안? -> 게임 코드 수행
+            //디자인 패턴(설계 유형)
+            //싱글톤 패턴
         }
     }
     
@@ -351,7 +367,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         //마우스 클릭 한 순간부터, 마우스를 움직이면 사각형이 마우스를 따라가며 그려짐
         g_ptRB.x = LOWORD(lParam);
         g_ptRB.y = HIWORD(lParam);
-        InvalidateRect(hWnd, nullptr, true);
+        //InvalidateRect(hWnd, nullptr, true); -> 메시지를 발생하며, 마우스 움직임과 같은 동작에 들어가면 매우 비효율적임
     }
     break;
 
