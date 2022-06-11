@@ -1,15 +1,16 @@
 ﻿// Client.cpp : 애플리케이션에 대한 진입점을 정의합니다.
 //
-
+#include "pch.h"
 #include "framework.h"
 #include "Client.h"
+#include "CCore.h"
 
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 //WCHAR = wchar_t를 이름만 바꾼것임
-HWND g_hwnd;
+HWND g_hwnd; //이 프로그램이 띄우는 윈도우의 ID
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 
@@ -49,6 +50,14 @@ int APIENTRY wWinMain(
     // 애플리케이션 초기화를 수행합니다:
     if (!InitInstance (hInstance, nCmdShow))
     {
+        return FALSE;
+    }
+
+    //Core 객체 초기화
+    if (FAILED(CCore::GetInst()->Init(g_hwnd, POINT{ 1200,768 })))
+    {
+        //core 객체 생성에 실패하면, 에러 메시지와 함께 프로그램을 종료시킨다.
+        MessageBox(g_hwnd, L"Core 객체 생성 실패!", L"ERROR", MB_OK);
         return FALSE;
     }
 
@@ -117,6 +126,9 @@ int APIENTRY wWinMain(
             //메시지가 발생하지 않는 동안? -> 게임 코드 수행
             //디자인 패턴(설계 유형)
             //싱글톤 패턴
+
+            //메시지가 없을 때 진행
+            CCore::GetInst()->progress();
         }
     }
     
@@ -367,7 +379,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         //마우스 클릭 한 순간부터, 마우스를 움직이면 사각형이 마우스를 따라가며 그려짐
         g_ptRB.x = LOWORD(lParam);
         g_ptRB.y = HIWORD(lParam);
-        //InvalidateRect(hWnd, nullptr, true); -> 메시지를 발생하며, 마우스 움직임과 같은 동작에 들어가면 매우 비효율적임
+        //InvalidateRect(hWnd, nullptr, true); //-> 메시지를 발생하며, 마우스 움직임과 같은 동작에 들어가면 매우 비효율적임
     }
     break;
 
