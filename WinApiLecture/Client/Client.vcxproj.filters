@@ -17,11 +17,14 @@
     <Filter Include="Engine\1_Header">
       <UniqueIdentifier>{542b2748-deb3-4a05-84f0-b4182be7b923}</UniqueIdentifier>
     </Filter>
-    <Filter Include="3_Manager">
+    <Filter Include="Engine\3_Manager">
       <UniqueIdentifier>{c97b00f3-c073-434c-a667-5a3953e99add}</UniqueIdentifier>
     </Filter>
-    <Filter Include="3_Manager\KeyMgr">
+    <Filter Include="Engine\3_Manager\KeyMgr">
       <UniqueIdentifier>{9451103a-0b3e-40a1-91aa-3e926b2c3286}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\4_Object">
+      <UniqueIdentifier>{aeebe0a5-1ef3-413f-8f18-36b579ce4ce1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -44,9 +47,12 @@
       <Filter>Engine\1_Header</Filter>
     </ClInclude>
     <ClInclude Include="CKeyMgr.h">
-      <Filter>3_Manager\KeyMgr</Filter>
+      <Filter>Engine\3_Manager\KeyMgr</Filter>
     </ClInclude>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="CObject.h">
+      <Filter>Engine\4_Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -66,8 +72,11 @@
       <Filter>Engine\2_Core</Filter>
     </ClCompile>
     <ClCompile Include="CKeyMgr.cpp">
-      <Filter>3_Manager\KeyMgr</Filter>
+      <Filter>Engine\3_Manager\KeyMgr</Filter>
     </ClCompile>
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="CObject.cpp">
+      <Filter>Engine\4_Object</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

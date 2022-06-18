@@ -77,10 +77,15 @@ public:
 private:
 	HWND	m_hwnd;			//현재 윈도우 핸들
 	POINT	m_ptResolution; //윈도우 해상도
+	HDC		m_hDC;			//메인 윈도우에 draw 할 DC;
 
 public:
 	int Init(HWND _hwnd, POINT _ptResolution);
 	void progress();
+
+private:
+	void update();
+	void render();
 
 private:
 	CCore();

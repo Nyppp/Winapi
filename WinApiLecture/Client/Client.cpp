@@ -54,7 +54,7 @@ int APIENTRY wWinMain(
     }
 
     //Core 객체 초기화
-    if (FAILED(CCore::GetInst()->Init(g_hwnd, POINT{ 1200,768 })))
+    if (FAILED(CCore::GetInst()->Init(g_hwnd, POINT{ 1280,768 })))
     {
         //core 객체 생성에 실패하면, 에러 메시지와 함께 프로그램을 종료시킨다.
         MessageBox(g_hwnd, L"Core 객체 생성 실패!", L"ERROR", MB_OK);
@@ -214,26 +214,26 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 //
 
-#include <vector>
-using std::vector;
-
-//마우스좌표를 담는 구조체
-struct tObjInfo
-{
-    //마우스 좌표
-    POINT g_ptObjectPos;
-    POINT g_ptObjectScale;
-};
-
-//모든 오브젝트들의 좌표를 저장하는 벡터
-vector<tObjInfo> g_vecInfo;
-
-//좌상단 좌표
-POINT g_ptLT;
-//우하단 좌표
-POINT g_ptRB;
-
-bool bLbtDown = false;
+//#include <vector>
+//using std::vector;
+//
+////마우스좌표를 담는 구조체
+//struct tObjInfo
+//{
+//    //마우스 좌표
+//    POINT g_ptObjectPos;
+//    POINT g_ptObjectScale;
+//};
+//
+////모든 오브젝트들의 좌표를 저장하는 벡터
+//vector<tObjInfo> g_vecInfo;
+//
+////좌상단 좌표
+//POINT g_ptLT;
+////우하단 좌표
+//POINT g_ptRB;
+//
+//bool bLbtDown = false;
 
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -275,51 +275,53 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             //윈도우 핸들
             //hdc
 
-            //selectobject는 dc에 특정 핸들값을 넣어서 바꾸면, 그 핸들값이 반환됨
-            //하지만 리턴 타입이 void 포인터이기 떄문에 형변환이 필요함(뭘 넣든 반환한다는 뜻)
-            HPEN hRedPen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
-            HBRUSH hBlueBrush = CreateSolidBrush(RGB(0, 0, 255));
-            //getStockObject -> 미리 만들어진 자주 쓰는 펜, 브러쉬 커널오브젝트
+            ////selectobject는 dc에 특정 핸들값을 넣어서 바꾸면, 그 핸들값이 반환됨
+            ////하지만 리턴 타입이 void 포인터이기 떄문에 형변환이 필요함(뭘 넣든 반환한다는 뜻)
+            //HPEN hRedPen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
+            //HBRUSH hBlueBrush = CreateSolidBrush(RGB(0, 0, 255));
+            ////getStockObject -> 미리 만들어진 자주 쓰는 펜, 브러쉬 커널오브젝트
 
-            //기본 데이터들의 id를 받아둔다.
-            HPEN hDefaultPen = (HPEN)SelectObject(hdc, hRedPen);
-            HBRUSH hDefaultBrush = (HBRUSH)SelectObject(hdc, hBlueBrush);
+            ////기본 데이터들의 id를 받아둔다.
+            //HPEN hDefaultPen = (HPEN)SelectObject(hdc, hRedPen);
+            //HBRUSH hDefaultBrush = (HBRUSH)SelectObject(hdc, hBlueBrush);
 
-            //100x100 pixel의 사각형 그리기 동작을 윈도우 10,10 위치에서 그림
-            //device context가 현재 윈도우를 목적으로 하기에, 우리가 띄운 윈도우에 그려짐
-            if (bLbtDown)
-            {
-                Rectangle(hdc,
-                    g_ptLT.x,
-                    g_ptLT.y,
-                    g_ptRB.x,
-                    g_ptRB.y);
-            }
-            
-            //벡터에 저장된 모든 사각형 좌표정보를 가져와서 그린다.
-            for (size_t i = 0; i < g_vecInfo.size(); ++i)
-            {
-                Rectangle(hdc,
-                    g_vecInfo[i].g_ptObjectPos.x - g_vecInfo[i].g_ptObjectScale.x / 2,
-                    g_vecInfo[i].g_ptObjectPos.y - g_vecInfo[i].g_ptObjectScale.y / 2,
-                    g_vecInfo[i].g_ptObjectPos.x + g_vecInfo[i].g_ptObjectScale.x / 2,
-                    g_vecInfo[i].g_ptObjectPos.y + g_vecInfo[i].g_ptObjectScale.y / 2);
-            }
+            ////100x100 pixel의 사각형 그리기 동작을 윈도우 10,10 위치에서 그림
+            ////device context가 현재 윈도우를 목적으로 하기에, 우리가 띄운 윈도우에 그려짐
+            //if (bLbtDown)
+            //{
+            //    Rectangle(hdc,
+            //        g_ptLT.x,
+            //        g_ptLT.y,
+            //        g_ptRB.x,
+            //        g_ptRB.y);
+            //}
+            //
+            ////벡터에 저장된 모든 사각형 좌표정보를 가져와서 그린다.
+            //for (size_t i = 0; i < g_vecInfo.size(); ++i)
+            //{
+            //    Rectangle(hdc,
+            //        g_vecInfo[i].g_ptObjectPos.x - g_vecInfo[i].g_ptObjectScale.x / 2,
+            //        g_vecInfo[i].g_ptObjectPos.y - g_vecInfo[i].g_ptObjectScale.y / 2,
+            //        g_vecInfo[i].g_ptObjectPos.x + g_vecInfo[i].g_ptObjectScale.x / 2,
+            //        g_vecInfo[i].g_ptObjectPos.y + g_vecInfo[i].g_ptObjectScale.y / 2);
+            //}
 
-            //이 방법은 물체마다 좌표 정보가 필요하고, 물체가 많으면
-            //반복적인 작업이 요구되며, 수 많은 물체중 하나만 움직여도 매번 다시 그려야 함
+            ////이 방법은 물체마다 좌표 정보가 필요하고, 물체가 많으면
+            ////반복적인 작업이 요구되며, 수 많은 물체중 하나만 움직여도 매번 다시 그려야 함
 
-            //이를 해결하는 방법
-            //렌더링 -> 매 순간 화면의 변경점을 제공하기 위해 그리는 작업
-            //프레임 -> 화면을 얼마나 자주 그려주는지에 대한 수치
+            ////이를 해결하는 방법
+            ////렌더링 -> 매 순간 화면의 변경점을 제공하기 위해 그리는 작업
+            ////프레임 -> 화면을 얼마나 자주 그려주는지에 대한 수치
 
-            //받아둔 id를 통해 다시 기본값으로 불러옴
-            SelectObject(hdc, hDefaultPen);
-            SelectObject(hdc, hDefaultBrush);
+            ////받아둔 id를 통해 다시 기본값으로 불러옴
+            //SelectObject(hdc, hDefaultPen);
+            //SelectObject(hdc, hDefaultBrush);
 
-            //커널 오브젝트 삭제 요청
-            DeleteObject(hRedPen);
-            DeleteObject(hDefaultBrush);
+            ////커널 오브젝트 삭제 요청
+            //DeleteObject(hRedPen);
+            //DeleteObject(hDefaultBrush);
+
+            Rectangle(hdc, 1180, 668, 1280, 768);
 
             EndPaint(hWnd, &ps);
         }
@@ -367,9 +369,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         //무효화 영역을 직접 설정하는 함수 -> 윈도우를 다시 그림
         //InvalidateRect(hWnd, nullptr, true);
-        g_ptLT.x = LOWORD(lParam);
+        /*g_ptLT.x = LOWORD(lParam);
         g_ptLT.y = HIWORD(lParam);
-        bLbtDown = true;
+        bLbtDown = true;*/
         break;
     }
 
@@ -377,8 +379,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_MOUSEMOVE:
     {
         //마우스 클릭 한 순간부터, 마우스를 움직이면 사각형이 마우스를 따라가며 그려짐
-        g_ptRB.x = LOWORD(lParam);
-        g_ptRB.y = HIWORD(lParam);
+        /*g_ptRB.x = LOWORD(lParam);
+        g_ptRB.y = HIWORD(lParam);*/
         //InvalidateRect(hWnd, nullptr, true); //-> 메시지를 발생하며, 마우스 움직임과 같은 동작에 들어가면 매우 비효율적임
     }
     break;
@@ -386,7 +388,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     //마우스를 떼면 그려진 사각형을 저장
     case WM_LBUTTONUP:
     {
-        tObjInfo info = {};
+        /*tObjInfo info = {};
         info.g_ptObjectPos.x = (g_ptLT.x + g_ptRB.x) / 2;
         info.g_ptObjectPos.y = (g_ptLT.y + g_ptRB.y) / 2;
 
@@ -395,7 +397,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         g_vecInfo.push_back(info);
         bLbtDown = false;
-        InvalidateRect(hWnd, nullptr, true);
+        InvalidateRect(hWnd, nullptr, true);*/
         
     }
     break;
