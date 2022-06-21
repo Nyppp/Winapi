@@ -71,6 +71,9 @@ void CCore::progress()
 	//문제점 : PC환경에 따라 연산 횟수가 다름
 	update();
 
+	//매니저 업데이트 -> 시간 기반 업데이트
+	CTimeMgr::GetInst()->update();
+
 	render();
 
 }
@@ -83,12 +86,24 @@ void CCore::update()
 	//평소에는 어떤 상태값으로 주어지지만, 0x8000과 비트연산자를 하면 눌림, 안눌림 여부만을 알아낼 수 있음
 	if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 	{
-		vPos.x -= 0.01f;
+		//프레임은 작업이 늘어날수록 불안정하기 때문에,
+		//안정적인 시간값을 활용해서 이동값을 변화시킴
+		vPos.x -= 200.f * fDT;
 	}
 
 	if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 	{
-		vPos.x += 0.01f;
+		vPos.x += 200.f * fDT;
+	}
+
+	if (GetAsyncKeyState(VK_UP) & 0x8000)
+	{
+		vPos.y -= 200.f * fDT;
+	}
+
+	if (GetAsyncKeyState(VK_DOWN) & 0x8000)
+	{
+		vPos.y += 200.f * fDT;
 	}
 
 	g_obj.SetPos(vPos);

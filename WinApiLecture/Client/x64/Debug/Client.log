@@ -1,2 +1,6 @@
-﻿  CKeyMgr.cpp
+﻿  CCore.cpp
+  CKeyMgr.cpp
+  CObject.cpp
+  CTimeMgr.cpp
+  Client.cpp
   Client.vcxproj -> C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\x64\Debug\Client.exe

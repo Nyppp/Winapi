@@ -4,5 +4,6 @@
 //모든 cpp파일들은 미리 컴파일 된 헤더를 참조해야 함
 
 #include <Windows.h>
+#include <wchar.h>
 #include "Define.h"
 #include "Struct.h"
