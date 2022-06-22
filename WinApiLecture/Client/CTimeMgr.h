@@ -1,4 +1,6 @@
 #pragma once
+
+//시간, 프레임을 담당하는 CTimeMgr
 class CTimeMgr
 {
 	SINGLE(CTimeMgr);
