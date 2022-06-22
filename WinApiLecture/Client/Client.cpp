@@ -321,8 +321,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             //DeleteObject(hRedPen);
             //DeleteObject(hDefaultBrush);
 
-            Rectangle(hdc, 1180, 668, 1280, 768);
-
             EndPaint(hWnd, &ps);
         }
         break;
@@ -331,28 +329,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_KEYDOWN:
     {
         //wParam = 키보드가 눌린 값이 16진수로 들어옴
-        switch (wParam)
-        {
-        case VK_UP:
-            //g_ptObjectPos.y -= 10;
-            InvalidateRect(hWnd, nullptr, true);
-            break;
+        //switch (wParam)
+        //{
+        //case VK_UP:
+        //    //g_ptObjectPos.y -= 10;
+        //    InvalidateRect(hWnd, nullptr, true);
+        //    break;
 
-        case VK_DOWN:
-            //g_ptObjectPos.y += 10;
-            InvalidateRect(hWnd, nullptr, true);
-            break;
+        //case VK_DOWN:
+        //    //g_ptObjectPos.y += 10;
+        //    InvalidateRect(hWnd, nullptr, true);
+        //    break;
 
-        case VK_LEFT:
-            //g_ptObjectPos.x -= 10;
-            InvalidateRect(hWnd, nullptr, true);
-            break;
+        //case VK_LEFT:
+        //    //g_ptObjectPos.x -= 10;
+        //    InvalidateRect(hWnd, nullptr, true);
+        //    break;
 
-        case VK_RIGHT:
-            //g_ptObjectPos.x += 10;
-            InvalidateRect(hWnd, nullptr, true);
-            break;
-        }
+        //case VK_RIGHT:
+        //    //g_ptObjectPos.x += 10;
+        //    InvalidateRect(hWnd, nullptr, true);
+        //    break;
+        //}
     }
         break;
 

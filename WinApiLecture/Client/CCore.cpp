@@ -18,18 +18,32 @@ int CCore::Init(HWND _hwnd, POINT _ptResolution)
 	//50,50 위치에, 입력받은 해상도 크기 x,y 만큼의 크기를 가진 윈도우로 해상도 변경
 
 	//LPRECT == RECT 포인터 타입
-	RECT rc = {0,0,m_ptResolution.x, m_ptResolution.y};
+	RECT rc = {0, 0, m_ptResolution.x, m_ptResolution.y};
 
 	//윈도우 크기를 지정한 해상도 사이즈가 나오게 조정해줌, rc를 수정하기에 const pointer로 받지 않음
 	//메뉴바나, 좌우 여백을 신경써서 윈도우 크기를 보장해주기 때문에, 기존에 RECT 변수에 있던 해상도를 보장해준다.
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, true);
-
+	SetWindowPos(m_hwnd, NULL, 100, 100, rc.right - rc.left, rc.bottom - rc.top, 0);
+	
 	//기존 직접 해상도를 입력하여 윈도우 크기를 설정하는것보다 정확하게 해상도를 보장해줌
-	//SetWindowPos(m_hwnd, NULL, 100, 100, rc.right - rc.left, rc.bottom - rc.top, 0);
 	//SetWindowPos(m_hwnd, NULL, 100, 100, m_ptResolution.x, m_ptResolution.y, 0);
 
 	//내부적으로 draw 할 공간을 가져오는 GetDC 함수(커널함수)
+	//윈도우가 보유한 비트맵을 DC가 목적지로 삼는 것
 	m_hDC = GetDC(m_hwnd);
+
+	//이중 버퍼링 용도의 비트맵과 dc 생성
+	//윈도우 화면의 픽셀 집합 -> 비트맵 으로 관리
+	//윈도우와 똑같은 비트맵을 만듦, CompatibleBitmap은 현재 윈도우와 호환되는 윈도우라는 의미
+	m_hBit = CreateCompatibleBitmap(m_hDC, m_ptResolution.x, m_ptResolution.y);
+	m_memDC = CreateCompatibleDC(m_hDC);
+
+	//DC는 만들어질 때 기본적으로 1픽셀짜리 목적지가 포함되어있음(더미 데이터)
+	//SelectObject는 펜, 브러쉬를 바꾸는 것 뿐 아니라 그림을 그리는 목적지도 변경가능
+	HBITMAP hOldBit = (HBITMAP)SelectObject(m_memDC, m_hBit);
+
+	//현재 memDC는 1픽셀짜리 더미 데이터가 그림공간으로 있기에 바로 지워버림
+	DeleteObject(hOldBit);
 
 	//Manager 초기화
 	CTimeMgr::GetInst()->init();
@@ -112,18 +126,30 @@ void CCore::update()
 //물체들을 그리는 함수
 void CCore::render()
 {
+	//이전 프레임에 그려진 장면을 모두 지움
+	//화면 전체를 지우는 목적이기 때문에 -1부터 최대값 +1까지 지우기
+	Rectangle(m_memDC, -1, -1, m_ptResolution.x+1, m_ptResolution.y+1 );
+
 	Vec2 vPos = g_obj.GetPos();
 	Vec2 vScale = g_obj.GetScale();
 	//결국, 게임 속 물체의 좌표만 제대로 갱신해주면 그것을 그리면 됨
-	Rectangle(m_hDC, 
+	Rectangle(m_memDC, 
 		int(vPos.x - vScale.x / 2.f),
 		int(vPos.y - vScale.y / 2.f),
 		int(vPos.x + vScale.x / 2.f),
 		int(vPos.y + vScale.y / 2.f));
 
+	//한 DC에 담긴 비트맵을 다른 DC에 옮겨주는 BitBlt 함수
+	BitBlt(m_hDC, 0,0, m_ptResolution.x, m_ptResolution.y, 
+		m_memDC, 0,0, SRCCOPY);
 }
 
-CCore::CCore() : m_hwnd(0), m_ptResolution{}, m_hDC(0)
+CCore::CCore() 
+	: m_hwnd(0), 
+	m_ptResolution{}, 
+	m_hDC(0), 
+	m_hBit(0),
+	m_memDC(0)
 {
 
 }
@@ -132,4 +158,8 @@ CCore::~CCore()
 {
 	//init할 때 가져온 Device context를 해제함
 	ReleaseDC(m_hwnd, m_hDC);
+
+	//메인 윈도우와 연결되지 않은 DC는 비트맵과 각각 지워줘야 함
+	DeleteDC(m_memDC);
+	DeleteObject(m_hBit);
 }
