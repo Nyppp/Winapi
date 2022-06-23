@@ -6,6 +6,14 @@ struct Vec2
 	float y;
 
 public:
+	//POINT 구조체를 Vec2가 대입받기 위해 대입연산자 오버로딩
+	Vec2& operator = (POINT _pt)
+	{
+		x = (float)_pt.x;
+		y = (float)_pt.y;
+	}
+
+public:
 	Vec2() : x(0.f), y(0.f) {}
 	Vec2(float _x, float _y) : x(_x), y(_y) {}
 
@@ -17,4 +25,10 @@ public:
 		y = (float)_y;
 	}
 
+	//또한 객체 선언과 동시에 POINT 객체를 대입하면, 복사 생성자를 호출하기 떄문에 생성자도 선언
+	Vec2(POINT _pt)
+	{
+		x = (float)_pt.x;
+		y = (float)_pt.y;
+	}
 };

@@ -6,7 +6,7 @@
 #include "CSceneMgr.h"
 
 //CCore* CCore::g_pInst = nullptr;
-CObject g_obj;
+//CObject g_obj;
 
 int CCore::Init(HWND _hwnd, POINT _ptResolution)
 {
