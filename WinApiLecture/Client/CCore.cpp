@@ -3,9 +3,9 @@
 #include "CObject.h"
 #include "CTimeMgr.h"
 #include "CKeyMgr.h"
+#include "CSceneMgr.h"
 
 //CCore* CCore::g_pInst = nullptr;
-
 CObject g_obj;
 
 int CCore::Init(HWND _hwnd, POINT _ptResolution)
@@ -48,15 +48,8 @@ int CCore::Init(HWND _hwnd, POINT _ptResolution)
 	//Manager 초기화
 	CTimeMgr::GetInst()->init();
 	CKeyMgr::GetInst()->init();
-	
-
-	Vec2 vPos = Vec2((float)(m_ptResolution.x / 2), (float)(m_ptResolution.y / 2));
-	Vec2 vSacle = Vec2(100, 100);
-	g_obj.SetPos(vPos);
-	g_obj.SetScale(vSacle);
-
-	//m_hDC에다가 Paint를 하면 이는, 메시지에 엮여있지 않게 윈도우에 그림을 그리는 동작임
-	return 0;
+	CSceneMgr::GetInst()->init();
+	return S_OK;
 }
 
 
@@ -81,60 +74,28 @@ void CCore::progress()
 	//	Callcount = 0;
 	//}
 
-	//매니저 업데이트 -> 시간 기반 업데이트
-	CTimeMgr::GetInst()->update();
-	CKeyMgr::GetInst()->update();
+	//매니저 업데이트 -> 시간 기반 업데이트 -> fixedupdate와 유사함
+	CTimeMgr::GetInst()->update(); //시간값을 가져와서 프레임기준 시간을 가져오고
+	CKeyMgr::GetInst()->update(); //키 매니저를 통해 어떤 키가 눌렸는지 체크하고
+	CSceneMgr::GetInst()->update(); //씬 매니저를 통해 어떤 오브젝트가 어느 위치에 존재하는지 계산
 
-	//Unity 엔진에서의 Update문과 비슷한 동작으로, 매 프레임마다 동작을 하게 된다.
+	//기존 Ccore에서 프레임 기준 업데이트 : Unity 엔진에서의 Update문과 비슷한 동작으로, 매 프레임마다 동작을 하게 된다.
 	//문제점 : PC환경에 따라 연산 횟수가 다름
-	update();
+	//update(); -> 씬 매니저의 업데이트로 대체함
 
 	
-	render();
-}
-
-//물체들의 좌표 변경점을 업데이트 하는 함수
-void CCore::update()
-{
-	Vec2 vPos = g_obj.GetPos();
-	//GetAsyncKeyState -> 메시지 여부에 관계없이, 매개변수로 들어간 키가 눌린 상태인지 반환
-	//평소에는 어떤 상태값으로 주어지지만, 0x8000과 비트연산자를 하면 눌림, 안눌림 여부만을 알아낼 수 있음
-
-	//키가 눌려져 있는 동안, 코드 실행
-	if (CKeyMgr::GetInst()->GetKeyState(KEY::LEFT) == KEY_STATE::HOLD)
-	{
-		//프레임은 작업이 늘어날수록 불안정하기 때문에,
-		//안정적인 시간값을 활용해서 이동값을 변화시킴 -> 매크로 통해 fDT로 축약함
-		vPos.x -= 200.f * fDT;
-	}
-
-	if (CKeyMgr::GetInst()->GetKeyState(KEY::RIGHT) == KEY_STATE::HOLD)
-	{
-		vPos.x += 200.f * fDT;
-	}
-
-	g_obj.SetPos(vPos);
-}
-
-//물체들을 그리는 함수
-void CCore::render()
-{
+	//렌더링 -> 더블 버퍼링 사용해서 잔상 제거
 	//이전 프레임에 그려진 장면을 모두 지움
 	//화면 전체를 지우는 목적이기 때문에 -1부터 최대값 +1까지 지우기
-	Rectangle(m_memDC, -1, -1, m_ptResolution.x+1, m_ptResolution.y+1 );
-
-	Vec2 vPos = g_obj.GetPos();
-	Vec2 vScale = g_obj.GetScale();
-	//결국, 게임 속 물체의 좌표만 제대로 갱신해주면 그것을 그리면 됨
-	Rectangle(m_memDC, 
-		int(vPos.x - vScale.x / 2.f),
-		int(vPos.y - vScale.y / 2.f),
-		int(vPos.x + vScale.x / 2.f),
-		int(vPos.y + vScale.y / 2.f));
+	Rectangle(m_memDC, -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1);
+	CSceneMgr::GetInst()->render(m_memDC); //렌더링은 씬 매니저를 통해 그려냄
 
 	//한 DC에 담긴 비트맵을 다른 DC에 옮겨주는 BitBlt 함수
-	BitBlt(m_hDC, 0,0, m_ptResolution.x, m_ptResolution.y, 
-		m_memDC, 0,0, SRCCOPY);
+	BitBlt(m_hDC, 0, 0, m_ptResolution.x, m_ptResolution.y,
+		m_memDC, 0, 0, SRCCOPY);
+
+	//여기까지가 게임의 아주 기본적인 틀
+	//이제부터는 고급 렌더링이나, 3D 개념이 추가적으로 들어가는것 뿐임
 }
 
 CCore::CCore() 

@@ -8,7 +8,7 @@ private:
 
 public:
 	CObject();
-	~CObject();
+	virtual ~CObject();
 
 public:
 	void SetPos(Vec2 _vPos) { m_vPos = _vPos; }
@@ -16,6 +16,10 @@ public:
 
 	Vec2 GetPos() { return m_vPos; }
 	Vec2 GetScale() { return m_vScale; }
+
+public:
+	void update();
+	void render(HDC _dc);
 
 };
 

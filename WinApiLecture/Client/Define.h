@@ -22,3 +22,24 @@
 #define fDT CTimeMgr::GetInst()->GetfDT()
 
 #define DT CTimeMgr::GetInst()->GetDT()
+
+//씬에 존재하는 오브젝트를 분류하는 열거형 클래스
+enum class GROUP_TYPE
+{
+	DEFAULT,
+	PLAYER,
+	MISSILE,
+	MONSTER,
+
+	END = 32,
+};
+
+enum class SCENE_TYPE
+{
+	TOOL,
+	START,
+	STAGE_01,
+	STAGE_02,
+
+	END,
+};
