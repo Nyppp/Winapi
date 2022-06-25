@@ -19,6 +19,14 @@
 						type();\
 						~type()
 
+//특정 키가 해당 스테이트와 같은지 검사해주는 매크로 함수
+#define KEY_CHECK(key, state) CKeyMgr::GetInst()->GetKeyState(key) == state
+#define KEY_HOLD(key) KEY_CHECK(key, KEY_STATE::HOLD)
+#define KEY_TAP(key) KEY_CHECK(key, KEY_STATE::TAP)
+#define KEY_AWAY(key) KEY_CHECK(key, KEY_STATE::AWAY)
+#define KEY_NONE(key) KEY_CHECK(key, KEY_STATE::NONE)
+
+//시간값 가져오는 매크로 함수
 #define fDT CTimeMgr::GetInst()->GetfDT()
 
 #define DT CTimeMgr::GetInst()->GetDT()

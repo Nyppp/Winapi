@@ -30,7 +30,7 @@ public:
 	virtual void Exit() = 0; //해당 씬을 나갈 때 호출
 
 //private 멤버의 정보를 수정하는 함수를 protected로 만들면, 문제 발생 시 함수 호출 스택을 찾아가며 문제 발생지점을 찾을 수 있음
-protected:
+public:
 	//클래스 함수를 헤더에서 선언과 정의까지 하면, 해당 함수는 인라인함수가 되어 호출비용이 들지않음
 	void AddObject(CObject* _pObj, GROUP_TYPE _eType)
 	{

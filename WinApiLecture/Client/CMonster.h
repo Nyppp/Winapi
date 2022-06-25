@@ -9,6 +9,9 @@ private:
     float   m_fMaxDistance; //이동 반경
     int     m_iDir; //1 or -1 -> 이동방향
 
+    float   m_fCurTime;
+    float   m_fRandomTime;
+
 public:
     float GetSpeed() { return m_fSpeed; }
     void SetSpeed(float _f) { m_fSpeed = _f; }
@@ -20,6 +23,7 @@ public:
 
 public:
     virtual void update();
+    void CreateMonsterMissile();
 
 public:
     CMonster();

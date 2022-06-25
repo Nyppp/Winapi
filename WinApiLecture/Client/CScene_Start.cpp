@@ -14,7 +14,7 @@ void CScene_Start::Enter()
 	AddObject(pObj, GROUP_TYPE::DEFAULT);
 
 	//몬스터 오브젝트 추가
-	int iMonCount = 2;
+	int iMonCount = 15;
 
 	float fMoveDist = 25.f;
 	float fObjScale = 50.f;
