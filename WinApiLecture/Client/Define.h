@@ -26,6 +26,8 @@
 #define KEY_AWAY(key) KEY_CHECK(key, KEY_STATE::AWAY)
 #define KEY_NONE(key) KEY_CHECK(key, KEY_STATE::NONE)
 
+#define PI 3.1415926535f
+
 //시간값 가져오는 매크로 함수
 #define fDT CTimeMgr::GetInst()->GetfDT()
 

@@ -13,5 +13,7 @@ using std::vector;
 using std::string;
 using std::wstring;
 
+#include <numbers>
+
 #include "Define.h"
 #include "Struct.h"

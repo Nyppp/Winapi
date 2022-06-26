@@ -5,7 +5,7 @@ class CMissile :
     public CObject
 {
 private:
-    float m_fDir; //위 아래 방향
+    float m_fTheta; //위 아래 방향
 
 public:
     CMissile();
@@ -21,11 +21,11 @@ public:
     {
         if (_bUp == true)
         {
-            m_fDir = -1.f;
+            m_fTheta = -1.f;
         }
         else
         {
-            m_fDir = 1.f;
+            m_fTheta = 1.f;
         }
     }
 };

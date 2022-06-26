@@ -49,7 +49,7 @@ void CMonster::update()
 	if (m_fCurTime >= m_fRandomTime)
 	{
 		m_fCurTime = 0;
-		CreateMonsterMissile();
+		//CreateMonsterMissile();
 		
 		//그 후 미사일 발사 시간도 다시 랜덤하게 지정(0.5초 ~ 1초 사이의 랜덤 값)
 		std::random_device rd;
