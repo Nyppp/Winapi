@@ -13,6 +13,7 @@ using std::vector;
 using std::string;
 using std::wstring;
 
+#include <assert.h>
 #include <numbers>
 
 #include "Define.h"

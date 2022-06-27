@@ -6,6 +6,28 @@ struct Vec2
 	float y;
 
 public:
+	float Length()
+	{
+		//벡터의 길이를 구한다.
+		return sqrt(x * x  + y * y);
+	}
+
+	//정규화 벡터 구하는 함수
+	Vec2& normalize()
+	{
+		float fLen = Length();
+
+		//영벡터에 대한 정규화는 assert로 접근 제한
+		assert(fLen != 0.f);
+
+		//각 성분을 길이로 나누면 정규화 벡터가 나옴
+		x /= fLen; 
+		y /= fLen;
+
+		return *this;
+	}
+
+public:
 	//POINT 구조체를 Vec2가 대입받기 위해 대입연산자 오버로딩
 	Vec2& operator = (POINT _pt)
 	{

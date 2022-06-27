@@ -54,6 +54,7 @@ void CPlayer::CreateMissile()
 	//미사일에 대한 초기 정보 설정
 	pMissile->SetPos(vMissilePos);
 	pMissile->SetScale(Vec2(25.f, 25.f));
+	pMissile->SetDir(Vec2(-1.f, 7.f));
 
 	//씬 객체를 생성하여, 씬매니저를 통해 현재 씬을 가져오고 그 씬에 미사일을 추가한다(그린다)
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
