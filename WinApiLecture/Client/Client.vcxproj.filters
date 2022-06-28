@@ -59,6 +59,9 @@
     <Filter Include="Engine\6_Resource\Sound">
       <UniqueIdentifier>{0ee1ea60-f52e-47ed-aaf5-00fc9d31b8b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\3_Manager\PathMgr">
+      <UniqueIdentifier>{9ff04409-4d2a-4bf0-929d-41b4623d107c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCore.h">
@@ -119,6 +122,9 @@
     <ClInclude Include="CSound.h">
       <Filter>Engine\6_Resource\Sound</Filter>
     </ClInclude>
+    <ClInclude Include="CPathMgr.h">
+      <Filter>Engine\3_Manager\PathMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -173,6 +179,9 @@
     </ClCompile>
     <ClCompile Include="CSound.cpp">
       <Filter>Engine\6_Resource\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="CPathMgr.cpp">
+      <Filter>Engine\3_Manager\PathMgr</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

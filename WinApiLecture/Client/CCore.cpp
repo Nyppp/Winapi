@@ -4,6 +4,7 @@
 #include "CTimeMgr.h"
 #include "CKeyMgr.h"
 #include "CSceneMgr.h"
+#include "CPathMgr.h"
 
 //CCore* CCore::g_pInst = nullptr;
 //CObject g_obj;
@@ -46,9 +47,11 @@ int CCore::Init(HWND _hwnd, POINT _ptResolution)
 	DeleteObject(hOldBit);
 
 	//Manager 초기화
+	CPathMgr::GetInst()->init();
 	CTimeMgr::GetInst()->init();
 	CKeyMgr::GetInst()->init();
 	CSceneMgr::GetInst()->init();
+	
 	return S_OK;
 }
 
@@ -93,6 +96,8 @@ void CCore::progress()
 	//한 DC에 담긴 비트맵을 다른 DC에 옮겨주는 BitBlt 함수
 	BitBlt(m_hDC, 0, 0, m_ptResolution.x, m_ptResolution.y,
 		m_memDC, 0, 0, SRCCOPY);
+
+	CTimeMgr::GetInst()->render();
 
 	//여기까지가 게임의 아주 기본적인 틀
 	//이제부터는 고급 렌더링이나, 3D 개념이 추가적으로 들어가는것 뿐임

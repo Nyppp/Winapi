@@ -44,7 +44,10 @@ void CTimeMgr::update()
 
 	//시간값 구한 후, 다음 프레임도 계산하기 위해 이전시간값을 현재 시간값으로 변경
 	m_llPrevCount = m_llCurCount;
+}
 
+void CTimeMgr::render()
+{
 	++m_iCallCount;
 	m_dACC += m_dDT; //DeltaTime 누적
 
