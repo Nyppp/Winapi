@@ -9,14 +9,6 @@
 
 void CScene_Start::Enter()
 {
-	//텍스쳐 로딩
-	CTexture* pTex = new CTexture;
-
-	wstring strFilepath = CPathMgr::GetInst()->GetContentPath();
-	strFilepath += L"texture\\Player.bmp";
-	pTex->Load(strFilepath);
-
-	delete pTex;
 
 	//플레이어 오브젝트
 	CObject* pObj = new CPlayer;

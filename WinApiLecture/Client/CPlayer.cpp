@@ -6,6 +6,8 @@
 #include "CMissile.h"
 #include "CSceneMgr.h"
 #include "CScene.h"
+#include "CTexture.h"
+#include "CPathMgr.h"
 
 void CPlayer::update()
 {
@@ -41,6 +43,30 @@ void CPlayer::update()
 	SetPos(vPos);
 }
 
+void CPlayer::render(HDC _dc)
+{
+	int iWidth = (int)m_pTex->Width();
+	int iHeight = (int)m_pTex->Height();
+
+	Vec2 vPos = GetPos();
+
+	//무조건 복사
+	//BitBlt(_dc,
+	//	int(vPos.x - (float)(iWidth / 2)),
+	//	int(vPos.y - (float)(iHeight / 2)),
+	//	iWidth, iHeight,
+	//	m_pTex->GetDC(), 
+	//	0, 0, SRCCOPY);
+
+	//특정 조건을 걸어서, 해당 픽셀은 복사하지 않음 기능이 추가된 함수
+	TransparentBlt(_dc, 
+		int(vPos.x - (float)(iWidth / 2)),
+		int(vPos.y - (float)(iHeight / 2)), 
+		iWidth, iHeight, 
+		m_pTex->GetDC(),
+		0, 0, iWidth, iHeight, RGB(255,255,255));
+}
+
 //미사일 생성 함수
 void CPlayer::CreateMissile()
 {
@@ -54,9 +80,27 @@ void CPlayer::CreateMissile()
 	//미사일에 대한 초기 정보 설정
 	pMissile->SetPos(vMissilePos);
 	pMissile->SetScale(Vec2(25.f, 25.f));
-	pMissile->SetDir(Vec2(-1.f, 7.f));
+	pMissile->SetDir(Vec2(0.f, -1.f));
 
 	//씬 객체를 생성하여, 씬매니저를 통해 현재 씬을 가져오고 그 씬에 미사일을 추가한다(그린다)
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 	pCurScene->AddObject(pMissile, GROUP_TYPE::DEFAULT);
+}
+
+CPlayer::CPlayer() : m_pTex(nullptr)
+{
+	//텍스쳐 로딩
+	m_pTex = new CTexture;
+
+	wstring strFilepath = CPathMgr::GetInst()->GetContentPath();
+	strFilepath += L"texture\\Player.bmp";
+	m_pTex->Load(strFilepath);
+}
+
+CPlayer::~CPlayer()
+{
+	if (m_pTex != nullptr)
+	{
+		delete m_pTex;
+	}
 }
