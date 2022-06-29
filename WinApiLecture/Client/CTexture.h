@@ -18,8 +18,12 @@ public:
 
     HDC GetDC() { return m_dc; }
 
-public:
+
+//텍스쳐 객체를 아무나 생성할수 없고, 리소스 관리자만 실행할 수 있도록 friend 선언
+private:
     CTexture();
     ~CTexture();
+
+    friend class CResMgr;
 };
 

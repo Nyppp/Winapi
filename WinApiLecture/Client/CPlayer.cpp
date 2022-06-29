@@ -7,6 +7,7 @@
 #include "CSceneMgr.h"
 #include "CScene.h"
 #include "CTexture.h"
+#include "CResMgr.h"
 #include "CPathMgr.h"
 
 void CPlayer::update()
@@ -65,6 +66,9 @@ void CPlayer::render(HDC _dc)
 		iWidth, iHeight, 
 		m_pTex->GetDC(),
 		0, 0, iWidth, iHeight, RGB(255,255,255));
+
+	//그러나 텍스쳐는 리소스를 불러오는 것 -> 여러 클래스가 동시에 접근하거나 생성하면 문제 발생
+	//리소스 관리자를 통해 싱글턴 객체로 관리해야 함.
 }
 
 //미사일 생성 함수
@@ -80,7 +84,7 @@ void CPlayer::CreateMissile()
 	//미사일에 대한 초기 정보 설정
 	pMissile->SetPos(vMissilePos);
 	pMissile->SetScale(Vec2(25.f, 25.f));
-	pMissile->SetDir(Vec2(0.f, -1.f));
+	pMissile->SetDir(Vec2(0.f, 1.f));
 
 	//씬 객체를 생성하여, 씬매니저를 통해 현재 씬을 가져오고 그 씬에 미사일을 추가한다(그린다)
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
@@ -90,17 +94,10 @@ void CPlayer::CreateMissile()
 CPlayer::CPlayer() : m_pTex(nullptr)
 {
 	//텍스쳐 로딩
-	m_pTex = new CTexture;
-
-	wstring strFilepath = CPathMgr::GetInst()->GetContentPath();
-	strFilepath += L"texture\\Player.bmp";
-	m_pTex->Load(strFilepath);
+	m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\Player.bmp");
 }
 
 CPlayer::~CPlayer()
 {
-	if (m_pTex != nullptr)
-	{
-		delete m_pTex;
-	}
+
 }

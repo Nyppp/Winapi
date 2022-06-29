@@ -62,7 +62,7 @@
     <Filter Include="Engine\3_Manager\PathMgr">
       <UniqueIdentifier>{9ff04409-4d2a-4bf0-929d-41b4623d107c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\3_Manager\ResourceMgr">
+    <Filter Include="Engine\3_Manager\ResMgr">
       <UniqueIdentifier>{579a376c-71db-46c1-b30b-d179c9d2c59f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -128,6 +128,9 @@
     <ClInclude Include="CPathMgr.h">
       <Filter>Engine\3_Manager\PathMgr</Filter>
     </ClInclude>
+    <ClInclude Include="CResMgr.h">
+      <Filter>Engine\3_Manager\ResMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -185,6 +188,9 @@
     </ClCompile>
     <ClCompile Include="CPathMgr.cpp">
       <Filter>Engine\3_Manager\PathMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CResMgr.cpp">
+      <Filter>Engine\3_Manager\ResMgr</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
