@@ -22,6 +22,7 @@ public:
 
 	//모든 씬들이 똑같이 사용하기에 가상함수화 x
 	void update(); //씬이 보유한 모든 물체 좌표값을 업데이트
+	void finalupdate();
 	void render(HDC _dc); //그 좌표를 기준으로 모든 물체를 그려냄
 
 	//Start는 순수 가상함수. -> 순수 가상함수를 포함한 클래스는 절대 객체화 될 수 없음

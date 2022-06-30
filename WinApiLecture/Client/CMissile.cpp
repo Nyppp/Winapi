@@ -6,6 +6,7 @@ CMissile::CMissile() : m_fTheta(PI/2.f), m_vDir(Vec2(1.f,1.f))
 {
 	//∫§≈Õ ¡§±‘»≠
 	m_vDir.normalize();
+	CreateCollider();
 }
 
 CMissile::~CMissile()

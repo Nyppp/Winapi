@@ -19,6 +19,8 @@ CMonster::CMonster() : m_fSpeed(100.f), m_vCenterPos(Vec2(0.f, 0.f)), m_fMaxDist
 	std::uniform_real_distribution<> dis(0.5f, 1.0f);
 
 	m_fRandomTime = dis(gen);
+
+	CreateCollider();
 }
 
 CMonster::~CMonster()

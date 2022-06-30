@@ -95,6 +95,7 @@ CPlayer::CPlayer() : m_pTex(nullptr)
 {
 	//텍스쳐 로딩
 	m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\Player.bmp");
+	CreateCollider();
 }
 
 CPlayer::~CPlayer()
