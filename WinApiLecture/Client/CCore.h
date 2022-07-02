@@ -79,19 +79,25 @@ private:
 	POINT	m_ptResolution; //윈도우 해상도
 	HDC		m_hDC;			//메인 윈도우에 draw 할 DC;
 
-	HBITMAP m_hBit;
-	HDC m_memDC;
+	HBITMAP m_hBit; //비트맵
+	HDC m_memDC; //이중버퍼링을 위해 따로 화면이 그려질 DC
+
+	//자주 사용하는 GDI 오브젝트
+	HBRUSH m_arrBrush[(UINT)BRUSH_TYPE::END];
+	HPEN m_arrPen[(UINT)PEN_TYPE::END];
 
 public:
 	int Init(HWND _hwnd, POINT _ptResolution);
 	void progress();
 
 private:
-	void update();
-	void render();
+	void CreateBrushPen();
 
+//멤버함수 getter
 public:
 	HWND GetMainHwnd() { return m_hwnd; }
 	HDC GetMainDC() { return m_hDC; }
 	POINT GetResolution() { return m_ptResolution; }
+	HBRUSH GetBrush(BRUSH_TYPE _eType) { return m_arrBrush[(UINT)_eType]; }
+	HPEN GetPen(PEN_TYPE _eType) { return m_arrPen[(UINT)_eType]; }
 };

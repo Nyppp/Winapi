@@ -19,6 +19,13 @@ private:
 
 	//크기는 절대값으로 지정
 	Vec2 m_vScale;
+	
+public:
+	void SetOffsetPos(Vec2 _vPos) { m_vOffsetPos = _vPos; }
+	void SetScale(Vec2 _vScale) { m_vScale = _vScale; }
+
+	Vec2 GetOffsetPos() { return m_vOffsetPos; }
+	Vec2 GetScale() { return m_vScale; }
 
 public:
 	CCollider();
@@ -26,6 +33,8 @@ public:
 
 public:
 	void finalupdate();
+
+	void render(HDC _dc);
 
 	friend class CObject;
 };

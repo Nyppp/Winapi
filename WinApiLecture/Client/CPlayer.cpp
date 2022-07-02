@@ -9,6 +9,7 @@
 #include "CTexture.h"
 #include "CResMgr.h"
 #include "CPathMgr.h"
+#include "CCollider.h"
 
 void CPlayer::update()
 {
@@ -69,6 +70,9 @@ void CPlayer::render(HDC _dc)
 
 	//그러나 텍스쳐는 리소스를 불러오는 것 -> 여러 클래스가 동시에 접근하거나 생성하면 문제 발생
 	//리소스 관리자를 통해 싱글턴 객체로 관리해야 함.
+
+	//컴포넌트(충돌체와 같은 추가적으로 오브젝트에 붙는 요소들) 렌더링
+	component_render(_dc);
 }
 
 //미사일 생성 함수
@@ -96,6 +100,8 @@ CPlayer::CPlayer() : m_pTex(nullptr)
 	//텍스쳐 로딩
 	m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\Player.bmp");
 	CreateCollider();
+
+	GetCollider()->SetScale(Vec2(100.f, 100.f));
 }
 
 CPlayer::~CPlayer()

@@ -46,6 +46,9 @@ int CCore::Init(HWND _hwnd, POINT _ptResolution)
 	//현재 memDC는 1픽셀짜리 더미 데이터가 그림공간으로 있기에 바로 지워버림
 	DeleteObject(hOldBit);
 
+	//자주 사용하는 펜, 브러쉬 초기화
+	CreateBrushPen();
+
 	//Manager 초기화
 	CPathMgr::GetInst()->init();
 	CTimeMgr::GetInst()->init();
@@ -103,12 +106,25 @@ void CCore::progress()
 	//이제부터는 고급 렌더링이나, 3D 개념이 추가적으로 들어가는것 뿐임
 }
 
+void CCore::CreateBrushPen()
+{
+	//자체 설계를 위해 윈도우 함수에 의존하지 않고, 자체적으로 hollow brush 값을 받아둬서 사용
+	m_arrBrush[(UINT)BRUSH_TYPE::HOLLOW] = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+
+	//RED펜
+	m_arrPen[(UINT)PEN_TYPE::RED] = (HPEN)CreatePen(PS_SOLID, 1, RGB(255,0,0));
+	m_arrPen[(UINT)PEN_TYPE::GREEN] = (HPEN)CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
+	m_arrPen[(UINT)PEN_TYPE::BLUE] = (HPEN)CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
+}
+
 CCore::CCore() 
 	: m_hwnd(0), 
 	m_ptResolution{}, 
 	m_hDC(0), 
 	m_hBit(0),
-	m_memDC(0)
+	m_memDC(0),
+	m_arrBrush{},
+	m_arrPen{}
 {
 
 }
@@ -121,4 +137,9 @@ CCore::~CCore()
 	//메인 윈도우와 연결되지 않은 DC는 비트맵과 각각 지워줘야 함
 	DeleteDC(m_memDC);
 	DeleteObject(m_hBit);
+
+	for (int i = 0; i < (UINT)PEN_TYPE::END; ++i)
+	{
+		DeleteObject(m_arrPen[i]);
+	}
 }

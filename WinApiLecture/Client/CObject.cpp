@@ -29,6 +29,16 @@ void CObject::render(HDC _dc)
 	Rectangle(_dc,
 		(int)(m_vPos.x - m_vScale.x / 2.f), (int)(m_vPos.y - m_vScale.y / 2.f),
 		(int)(m_vPos.x + m_vScale.x / 2.f), (int)(m_vPos.y + m_vScale.y / 2.f));
+
+	component_render(_dc);
+}
+
+void CObject::component_render(HDC _dc)
+{
+	if (m_pCollider != nullptr)
+	{
+		m_pCollider->render(_dc);
+	}
 }
 
 void CObject::CreateCollider()
