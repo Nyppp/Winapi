@@ -5,6 +5,7 @@
 
 #include "CScene.h"
 #include "CSceneMgr.h"
+#include "CCollider.h"
 
 #include <random>
 
@@ -21,6 +22,7 @@ CMonster::CMonster() : m_fSpeed(100.f), m_vCenterPos(Vec2(0.f, 0.f)), m_fMaxDist
 	m_fRandomTime = dis(gen);
 
 	CreateCollider();
+	GetCollider()->SetScale(Vec2(40.f, 40.f));
 }
 
 CMonster::~CMonster()

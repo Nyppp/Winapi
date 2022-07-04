@@ -38,6 +38,13 @@ public:
 		m_arrObj[(UINT)_eType].push_back(_pObj);
 	}
 
+	//참조 타입으로 반환하지 않으면 벡터 복사본을 반환해 메모리 낭비가 발생 + 원본 수정을 방지하고자 const 키워드 붙임
+	//원하는 그룹의 오브젝트 벡터를 반환하는 함수
+	const vector<CObject*>& GetGroupObject(GROUP_TYPE _eType)
+	{
+		return m_arrObj[(UINT)_eType];
+	}
+
 public:
 	CScene();
 	//파생클래스들이 소멸자를 호출할 때 부모 클래스의 소멸자를 부르지 않기 위해서.

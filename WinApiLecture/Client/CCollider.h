@@ -5,6 +5,8 @@ class CObject;
 class CCollider
 {
 private:
+	static UINT g_iNextID; //정적 멤버 -> 객체 포함x -> 항상 데이터 영역에 존재함
+
 	//충돌체가 어떤 오브젝트의 충돌체인지 구분하기 위해,
 	//멤버함수로 오브젝트 객체를 가진다.
 	CObject* m_pOwner;
@@ -19,6 +21,8 @@ private:
 
 	//크기는 절대값으로 지정
 	Vec2 m_vScale;
+
+	UINT m_iID; //충돌체의 고유한 id값 -> 이전프레임 충돌 정보를 저장하기 위해 선언
 	
 public:
 	void SetOffsetPos(Vec2 _vPos) { m_vOffsetPos = _vPos; }

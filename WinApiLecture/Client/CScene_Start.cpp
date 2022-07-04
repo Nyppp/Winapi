@@ -6,6 +6,7 @@
 #include "CCore.h"
 #include "CTexture.h"
 #include "CPathMgr.h"
+#include "CCollisionMgr.h"
 
 void CScene_Start::Enter()
 {
@@ -49,14 +50,20 @@ void CScene_Start::Enter()
 		//이동반경과 몬스터 크기를 설정해주고, 씬에 오브젝트 추가
 		pMonsterObj->SetMoveDistance(fMoveDist);
 		pMonsterObj->SetScale(Vec2(fObjScale, fObjScale));
-		AddObject(pMonsterObj, GROUP_TYPE::DEFAULT);
+		AddObject(pMonsterObj, GROUP_TYPE::MONSTER);
 	}
+
+	//충돌 지정
+	//플레이어 그룹과 몬스터 그룹 간 충돌체크
+	//이 충돌 관계 설정은 해당 씬이 유지되는 동안에만 설정된 충돌관계임
+	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::MONSTER);
 
 }
 
 void CScene_Start::Exit()
 {
-
+	//씬을 옮길 때, 충돌 관계를 모두 초기화시킨다.
+	CCollisionMgr::GetInst()->Reset();
 }
 
 CScene_Start::CScene_Start()

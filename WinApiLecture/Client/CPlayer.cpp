@@ -100,8 +100,10 @@ CPlayer::CPlayer() : m_pTex(nullptr)
 	//텍스쳐 로딩
 	m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\Player.bmp");
 	CreateCollider();
-
-	GetCollider()->SetScale(Vec2(100.f, 100.f));
+	
+	//오프셋을 주면, 오프셋 만큼 콜라이더 중심 좌표가 변경됨
+	GetCollider()->SetOffsetPos(Vec2(0.f, 5.f));
+	GetCollider()->SetScale(Vec2(20.f, 50.f));
 }
 
 CPlayer::~CPlayer()

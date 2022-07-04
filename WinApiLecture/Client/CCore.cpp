@@ -5,6 +5,7 @@
 #include "CKeyMgr.h"
 #include "CSceneMgr.h"
 #include "CPathMgr.h"
+#include "CCollisionMgr.h"
 
 //CCore* CCore::g_pInst = nullptr;
 //CObject g_obj;
@@ -84,6 +85,8 @@ void CCore::progress()
 	CTimeMgr::GetInst()->update(); //시간값을 가져와서 프레임기준 시간을 가져오고
 	CKeyMgr::GetInst()->update(); //키 매니저를 통해 어떤 키가 눌렸는지 체크하고
 	CSceneMgr::GetInst()->update(); //씬 매니저를 통해 어떤 오브젝트가 어느 위치에 존재하는지 계산
+	CCollisionMgr::GetInst()->update(); //그 후 씬에 담겨있는 오브젝트들의 충돌체를 업데이트
+	
 
 	//기존 Ccore에서 프레임 기준 업데이트 : Unity 엔진에서의 Update문과 비슷한 동작으로, 매 프레임마다 동작을 하게 된다.
 	//문제점 : PC환경에 따라 연산 횟수가 다름
