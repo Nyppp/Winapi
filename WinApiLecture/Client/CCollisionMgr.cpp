@@ -5,6 +5,9 @@
 #include "CObject.h"
 #include "CCollider.h"
 
+
+
+
 CCollisionMgr::CCollisionMgr() : m_arrCheck{}
 {
 
@@ -76,6 +79,8 @@ void CCollisionMgr::CollisionUpdateGroup(GROUP_TYPE _eLeft, GROUP_TYPE _eRight)
 	const vector<CObject*>& vecLeft = pCurScene->GetGroupObject(_eLeft);
 	const vector<CObject*>& vecRight = pCurScene->GetGroupObject(_eRight);
 
+	map<ULONGLONG, bool>::iterator iter;
+
 	//두 그룹에 대한 모든 오브젝트들 탐색
 	for (size_t i = 0; i < vecLeft.size(); ++i)
 	{
@@ -99,17 +104,54 @@ void CCollisionMgr::CollisionUpdateGroup(GROUP_TYPE _eLeft, GROUP_TYPE _eRight)
 				continue;
 			}
 
-			//두 오브젝트가 충돌한 경우
-			if (IsCollision(vecLeft[i]->GetCollider(), vecRight[i]->GetCollider()) == true)
+			CCollider* pLeftCol = vecLeft[i]->GetCollider();
+			CCollider* pRightCol = vecRight[j]->GetCollider();
+
+			//두 충돌체의 조합 아이디를 생성
+			COLLIDER_ID ID;
+			ID.Left_id = vecLeft[i]->GetCollider()->GetID();
+			ID.Right_id = vecRight[j]->GetCollider()->GetID();
+			
+			iter = m_mapColInfo.find(ID.ID);
+
+			//두 조합이 충돌 정보 맵에 존재하지 않음 -> 충돌하지 않음으로 저장
+			if (m_mapColInfo.end() == iter)
 			{
-				//TODO : 이벤트 활용한 오브젝트 충돌 검사
-				//이전 프레임의 충돌 여부를 활용해 충돌 동작 지정
-				//이전 프레임의 충돌 불러오는 방법은 해쉬 테이블 자료구조를 이용해 빠르게 불러와서 충돌 업데이트
+				m_mapColInfo.insert(make_pair(ID.ID, false));
+				iter = m_mapColInfo.find(ID.ID);
+			}
+
+			//두 오브젝트가 충돌한 경우
+			if (IsCollision(pLeftCol, pRightCol) == true)
+			{
+				//현재 충돌 중 -> 이전 프레임의 충돌 여부로 분기 발생
+				if (iter->second == true)
+				{
+					//이전에도 충돌중이었고, 지금도 충돌 중
+					pLeftCol->OnCollision(pRightCol);
+					pRightCol->OnCollision(pLeftCol);
+				}
+
+				else
+				{
+					//지금 충돌 시작
+					pLeftCol->OnCollisionEnter(pRightCol);
+					pRightCol->OnCollisionEnter(pLeftCol);
+
+					iter->second = true;
+				}
 			}
 			//충돌이 아닌 경우
 			else
 			{
+				//현재 충돌중이지 않지만, 이전프레임에 충돌했던 경우
+				if (iter->second == true)
+				{
+					pLeftCol->OnCollisionExit(pRightCol);
+					pRightCol->OnCollisionExit(pLeftCol);
 
+					iter->second = false;
+				}
 			}
 
 		}
@@ -118,5 +160,17 @@ void CCollisionMgr::CollisionUpdateGroup(GROUP_TYPE _eLeft, GROUP_TYPE _eRight)
 
 bool CCollisionMgr::IsCollision(CCollider* _pLeftCol, CCollider* _pRightCol)
 {
+	Vec2 vLeftPos = _pLeftCol->GetFinalPos();
+	Vec2 vRightPos = _pRightCol->GetFinalPos();
+
+	Vec2 vLeftScale = _pLeftCol->GetScale();
+	Vec2 vRightScale = _pRightCol->GetScale();
+
+	//두 중점 사이의 거리가, 두 오브젝트의 x, y크기값 합의 절반(충돌하지 않고 접해있을 때 길이)보다 작으면 충돌 발생
+	if (abs(vRightPos.x - vLeftPos.x) < (vLeftScale.x + vRightScale.x) / 2.f &&
+		abs(vRightPos.y - vLeftPos.y) < (vLeftScale.y + vRightScale.y) / 2.f)
+	{
+		return true;
+	}
 	return false;
 }

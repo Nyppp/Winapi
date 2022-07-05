@@ -2,6 +2,17 @@
 
 class CCollider;
 
+//유니온 자료구조 -> 8바이트 구조(UINT 2개 구조체 or LONGLONG 타입 변수 가 될 수 있는 유니온)
+union COLLIDER_ID
+{
+	struct {
+		UINT Left_id;
+		UINT Right_id;
+	};
+
+	LONGLONG ID;
+};
+
 class CCollisionMgr
 {
 	SINGLE(CCollisionMgr);
@@ -13,6 +24,7 @@ private:
 	UINT m_arrCheck[(UINT)GROUP_TYPE::END];
 
 	//충돌체 간의 이전 프레임의 충돌 정보
+	map<ULONGLONG, bool> m_mapColInfo;
 	
 
 public:

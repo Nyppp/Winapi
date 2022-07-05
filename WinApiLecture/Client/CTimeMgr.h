@@ -7,6 +7,7 @@ class CTimeMgr
 private:
 	//FPS -> 1프레임당 시간 DeltaTime
 
+	//Large integer -> 유니온(구조체 형태와 유사)
 	LARGE_INTEGER m_llCurCount;
 	LARGE_INTEGER m_llPrevCount;
 	LARGE_INTEGER m_llFrequency;

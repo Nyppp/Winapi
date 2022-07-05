@@ -2,6 +2,14 @@
 #include "CTimeMgr.h"
 #include "CCore.h"
 
+//유니온은 이렇게 선언해도 크기가 4바이트로 할당됨 -> 구조체는 8바이트
+//제일 큰 사이즈 멤버를 기준으로, 전 멤버가 같은 메모리 공간을 사용하도록 설계됨
+//TEST 유니온을 a로 접근하면, 거기 저장된 비트를 int로 해석하고, f로 접근하면 float로 해석함
+//union TEST
+//{
+//	int a;
+//	char f;
+//};
 
 CTimeMgr::CTimeMgr()
 	:m_llCurCount{}

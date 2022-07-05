@@ -9,17 +9,17 @@
 
 #include <random>
 
-CMonster::CMonster() : m_fSpeed(100.f), m_vCenterPos(Vec2(0.f, 0.f)), m_fMaxDistance(50.f), m_iDir(1), m_fCurTime(0.f)
+CMonster::CMonster() : m_fSpeed(100.f), m_vCenterPos(Vec2(0.f, 0.f)), m_fMaxDistance(50.f), m_iDir(1), m_fCurTime(0.f), m_fRandomTime(0.f)
 {
-	// 시드값을 얻기 위한 random_device 생성.
-	std::random_device rd;
+	//// 시드값을 얻기 위한 random_device 생성.
+	//std::random_device rd;
 
-	std::default_random_engine gen(rd());
+	//std::default_random_engine gen(rd());
 
-	// 0.5초 ~1초 사이의 랜덤 값 부여
-	std::uniform_real_distribution<> dis(0.5f, 1.0f);
+	//// 0.5초 ~1초 사이의 랜덤 값 부여
+	//std::uniform_real_distribution<> dis(0.5f, 1.0f);
 
-	m_fRandomTime = dis(gen);
+	//m_fRandomTime = dis(gen);
 
 	CreateCollider();
 	GetCollider()->SetScale(Vec2(40.f, 40.f));
@@ -47,21 +47,21 @@ void CMonster::update()
 
 	/* 과제 : 몬스터 미사일 발사 코드 작성 -> <random>헤더 사용하여 무작위 시간마다 미사일을 발사하게 코드 작성 */
 	//시간값을 계속 증가시킨다.
-	m_fCurTime += fDT;
+	//m_fCurTime += fDT;
 
-	//랜덤으로 부여된 미사일 발사 시간까지 도달하면, 미사일 발사
-	if (m_fCurTime >= m_fRandomTime)
-	{
-		m_fCurTime = 0;
-		//CreateMonsterMissile();
-		
-		//그 후 미사일 발사 시간도 다시 랜덤하게 지정(0.5초 ~ 1초 사이의 랜덤 값)
-		std::random_device rd;
-		std::default_random_engine gen(rd());
-		std::uniform_real_distribution<> dis(0.5f, 1.0f);
+	////랜덤으로 부여된 미사일 발사 시간까지 도달하면, 미사일 발사
+	//if (m_fCurTime >= m_fRandomTime)
+	//{
+	//	m_fCurTime = 0;
+	//	//CreateMonsterMissile();
+	//	
+	//	//그 후 미사일 발사 시간도 다시 랜덤하게 지정(0.5초 ~ 1초 사이의 랜덤 값)
+	//	std::random_device rd;
+	//	std::default_random_engine gen(rd());
+	//	std::uniform_real_distribution<> dis(0.5f, 1.0f);
 
-		m_fRandomTime = dis(gen);
-	}
+	//	m_fRandomTime = dis(gen);
+	//}
 	
 	SetPos(vCurPos);
 }

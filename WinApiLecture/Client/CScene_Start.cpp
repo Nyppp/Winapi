@@ -14,11 +14,11 @@ void CScene_Start::Enter()
 	//플레이어 오브젝트
 	CObject* pObj = new CPlayer;
 	pObj->SetPos(Vec2(640.f, 384.f));
-	pObj->SetScale(Vec2(100, 100));
-	AddObject(pObj, GROUP_TYPE::DEFAULT);
+	pObj->SetScale(Vec2(100.f, 100.f));
+	AddObject(pObj, GROUP_TYPE::PLAYER);
 
 	//몬스터 오브젝트 추가
-	int iMonCount = 15;
+	int iMonCount = 5;
 
 	float fMoveDist = 25.f;
 	float fObjScale = 50.f;
