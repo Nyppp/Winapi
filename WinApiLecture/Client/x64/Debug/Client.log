@@ -1,45 +1,4 @@
-﻿  CCore.cpp
+﻿  CEventMgr.cpp
   The contents of <numbers> are available only with C++20 or later.
 C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\Struct.h(12,14): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CKeyMgr.cpp
-  The contents of <numbers> are available only with C++20 or later.
-C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\Struct.h(12,14): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  Client.cpp
-  The contents of <numbers> are available only with C++20 or later.
-C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\Struct.h(12,14): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CMissile.cpp
-  The contents of <numbers> are available only with C++20 or later.
-C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\Struct.h(12,14): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CMonster.cpp
-  The contents of <numbers> are available only with C++20 or later.
-C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\Struct.h(12,14): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CMonster.cpp(21,21): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CMonster.cpp(59,22): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CObject.cpp
-  The contents of <numbers> are available only with C++20 or later.
-C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\Struct.h(12,14): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CPlayer.cpp
-  The contents of <numbers> are available only with C++20 or later.
-C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\Struct.h(12,14): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CRes.cpp
-  The contents of <numbers> are available only with C++20 or later.
-C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\Struct.h(12,14): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CScene.cpp
-  The contents of <numbers> are available only with C++20 or later.
-C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\Struct.h(12,14): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CSceneMgr.cpp
-  The contents of <numbers> are available only with C++20 or later.
-C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\Struct.h(12,14): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CScene_Start.cpp
-  The contents of <numbers> are available only with C++20 or later.
-C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\Struct.h(12,14): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CSound.cpp
-  The contents of <numbers> are available only with C++20 or later.
-C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\Struct.h(12,14): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CTexture.cpp
-  The contents of <numbers> are available only with C++20 or later.
-C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\Struct.h(12,14): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CTimeMgr.cpp
-  The contents of <numbers> are available only with C++20 or later.
-C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\Struct.h(12,14): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  Client.vcxproj -> C:\Output\bin_Debug\Client.exe
+  Client.vcxproj -> C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Output\bin_Debug\Client.exe

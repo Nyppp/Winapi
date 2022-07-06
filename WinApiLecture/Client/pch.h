@@ -25,3 +25,4 @@ using std::make_pair;
 
 #include "Define.h"
 #include "Struct.h"
+#include "func.h"

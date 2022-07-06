@@ -9,6 +9,8 @@ private:
 	Vec2 m_vPos;
 	Vec2 m_vScale;
 
+	wstring m_strName;
+
 	CCollider* m_pCollider;
 
 public:
@@ -22,9 +24,13 @@ public:
 	Vec2 GetPos() { return m_vPos; }
 	Vec2 GetScale() { return m_vScale; }
 
+	void SetName(const wstring& _strName) { m_strName = _strName; }
+	const wstring& GetName() { return m_strName; }
+
 	CCollider* GetCollider() { return m_pCollider; }
 
 public:
+	//가상함수에 = 0 을 붙이면, 무조건 자식 오브젝트에서의 오버라이딩 으로만 정의를 할 수 있음
 	virtual void update() = 0;
 
 	//부모 오브젝트에서의 finalupdate는, 자식 오브젝트들이 오버라이딩 하는 게 아니라
@@ -38,6 +44,10 @@ public:
 
 public:
 	void CreateCollider();
+
+	virtual void OnCollision(CCollider* _pOther);
+	virtual void OnCollisionEnter(CCollider* _pOther);
+	virtual void OnCollisionExit(CCollider* _pOther);
 
 };
 

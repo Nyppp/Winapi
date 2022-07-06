@@ -85,3 +85,13 @@ void CMonster::CreateMonsterMissile()
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 	pCurScene->AddObject(pMissile, GROUP_TYPE::DEFAULT);
 }
+
+void CMonster::OnCollisionEnter(CCollider* _pOther)
+{
+	CObject* pOtherObj = _pOther->GetObj();
+
+	//몬스터 오브젝트가 플레이어가 쏜 미사일에 맞으면 오브젝트 삭제
+	//그러나 렌더링이나, 참조 타입 등의 문제로 바로 지우면 문제 발생
+	//거기다, 씬 변경으로 오브젝트들이 바뀌면 업데이트는 이전 씬 기준인데, 렌더링은 바뀐 씬으로 하게 됨
+	//오브젝트 삭제에 대한 일괄적 동작 필요 -> 이벤트를 이용
+}

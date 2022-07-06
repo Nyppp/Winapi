@@ -46,3 +46,15 @@ void CObject::CreateCollider()
 	m_pCollider = new CCollider;
 	m_pCollider->m_pOwner = this;
 }
+
+void CObject::OnCollision(CCollider* _pOther)
+{
+}
+
+void CObject::OnCollisionEnter(CCollider* _pOther)
+{
+}
+
+void CObject::OnCollisionExit(CCollider* _pOther)
+{
+}

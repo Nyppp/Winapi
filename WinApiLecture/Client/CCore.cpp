@@ -6,6 +6,7 @@
 #include "CSceneMgr.h"
 #include "CPathMgr.h"
 #include "CCollisionMgr.h"
+#include "CEventMgr.h"
 
 //CCore* CCore::g_pInst = nullptr;
 //CObject g_obj;
@@ -84,7 +85,12 @@ void CCore::progress()
 	//매니저 업데이트 -> 시간 기반 업데이트 -> fixedupdate와 유사함
 	CTimeMgr::GetInst()->update(); //시간값을 가져와서 프레임기준 시간을 가져오고
 	CKeyMgr::GetInst()->update(); //키 매니저를 통해 어떤 키가 눌렸는지 체크하고
+	
+	
+	//씬 업데이트
 	CSceneMgr::GetInst()->update(); //씬 매니저를 통해 어떤 오브젝트가 어느 위치에 존재하는지 계산
+	
+	//충돌 체크
 	CCollisionMgr::GetInst()->update(); //그 후 씬에 담겨있는 오브젝트들의 충돌체를 업데이트
 	
 
@@ -104,9 +110,12 @@ void CCore::progress()
 		m_memDC, 0, 0, SRCCOPY);
 
 	CTimeMgr::GetInst()->render();
+	//렌더링 완료
 
-	//여기까지가 게임의 아주 기본적인 틀
-	//이제부터는 고급 렌더링이나, 3D 개념이 추가적으로 들어가는것 뿐임
+	//이벤트 지연 처리
+	//한 프레임에서 여러 이벤트가 발생할 수 있고, 이것은 다음 프레임에
+	//일괄적으로 처리시킴 -> 게임 프레임워크 중 가장 나중에 처리됨
+	CEventMgr::GetInst()->update();
 }
 
 void CCore::CreateBrushPen()

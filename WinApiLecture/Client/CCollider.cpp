@@ -54,17 +54,20 @@ void CCollider::render(HDC _dc)
 		(int)(m_vFinalPos.y + m_vScale.y / 2.f));
 }
 
+//충돌 이벤트 발생 여부만을 오브젝트에 전달.
 void CCollider::OnCollision(CCollider* _pOther)
 {
-
+	m_pOwner->OnCollision(_pOther);
 }
 
 void CCollider::OnCollisionEnter(CCollider* _pOther)
 {
 	++m_iCol;
+	m_pOwner->OnCollisionEnter(_pOther);
 }
 
 void CCollider::OnCollisionExit(CCollider* _pOther)
 {
 	--m_iCol;
+	m_pOwner->OnCollisionExit(_pOther);
 }

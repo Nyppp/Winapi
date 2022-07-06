@@ -25,6 +25,8 @@ public:
     virtual void update();
     void CreateMonsterMissile();
 
+    virtual void OnCollisionEnter(CCollider* _pOther);
+
 public:
     CMonster();
     ~CMonster();

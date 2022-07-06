@@ -39,6 +39,8 @@ public:
 
 	UINT GetID() { return m_iID; }
 
+	CObject* GetObj() { return m_pOwner; }
+
 public:
 	CCollider();
 	CCollider(const CCollider& _origin);
@@ -52,6 +54,10 @@ public:
 	//대입 연산자의 기능을 삭제시킴 -> 대입을 불허함
 	CCollider& operator = (CCollider& _origin) = delete;
 
+
+	//콜라이더에서 충돌이 발생하면, 그 기능을 콜라이더가 수행하는 게 아니라,
+	//콜라이더가 알고 있는 오브젝트에게 발생 여부만을 알려주고 기능 수행은
+	//오브젝트 내부의 oncollision 함수로 실행된다.
 	void OnCollision(CCollider* _pOther); //충돌 중일 때 호출되는 함수
 	void OnCollisionEnter(CCollider* _pOther); //충돌 진입 시 호출되는 함수
 	void OnCollisionExit(CCollider* _pOther); //충돌이 끝날 때 호출되는 함수

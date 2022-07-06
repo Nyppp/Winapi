@@ -91,8 +91,12 @@ void CPlayer::CreateMissile()
 	pMissile->SetDir(Vec2(0.f, 1.f));
 
 	//씬 객체를 생성하여, 씬매니저를 통해 현재 씬을 가져오고 그 씬에 미사일을 추가한다(그린다)
-	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-	pCurScene->AddObject(pMissile, GROUP_TYPE::DEFAULT);
+	//CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	//pCurScene->AddObject(pMissile, GROUP_TYPE::DEFAULT);
+
+	//하지만 이 방법은, 동기화 되지 않은 상태로 실행되기에 논리적으로 오류가 발생할 수 있음
+	//이벤트 관리자를 통해, 프레임 마다 동기화 된 함수를 기준으로 오브젝트를 생성해야 함
+	CreateObject(pMissile, GROUP_TYPE::PROJ_PLAYER);
 }
 
 CPlayer::CPlayer() : m_pTex(nullptr)
