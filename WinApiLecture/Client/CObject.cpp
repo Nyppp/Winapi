@@ -4,7 +4,7 @@
 #include "CTimeMgr.h"
 #include "CCollider.h"
 
-CObject::CObject() : m_vPos{}, m_vScale{}, m_pCollider(nullptr)
+CObject::CObject() : m_vPos{}, m_vScale{}, m_pCollider(nullptr), m_bAlive(true)
 {
 }
 

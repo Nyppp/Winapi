@@ -18,7 +18,7 @@ void CScene_Start::Enter()
 	AddObject(pObj, GROUP_TYPE::PLAYER);
 
 	//몬스터 오브젝트 추가
-	int iMonCount = 5;
+	int iMonCount = 15;
 
 	float fMoveDist = 25.f;
 	float fObjScale = 50.f;
@@ -49,6 +49,7 @@ void CScene_Start::Enter()
 
 		//이동반경과 몬스터 크기를 설정해주고, 씬에 오브젝트 추가
 		pMonsterObj->SetMoveDistance(fMoveDist);
+		pMonsterObj->SetName(L"Monster");
 		pMonsterObj->SetScale(Vec2(fObjScale, fObjScale));
 		AddObject(pMonsterObj, GROUP_TYPE::MONSTER);
 	}
@@ -57,7 +58,7 @@ void CScene_Start::Enter()
 	//플레이어 그룹과 몬스터 그룹 간 충돌체크
 	//이 충돌 관계 설정은 해당 씬이 유지되는 동안에만 설정된 충돌관계임
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::MONSTER);
-
+	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::PROJ_PLAYER);
 }
 
 void CScene_Start::Exit()

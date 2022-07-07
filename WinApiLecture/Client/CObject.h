@@ -13,6 +13,8 @@ private:
 
 	CCollider* m_pCollider;
 
+	bool m_bAlive;
+
 public:
 	CObject();
 	virtual ~CObject();
@@ -42,6 +44,15 @@ public:
 
 	void component_render(HDC _dc);
 
+	//오브젝트가 죽어있는지 묻는건 아무 클래스에서나 접근 가능하지만,
+	bool IsDead() { return !m_bAlive; }
+
+	//오브젝트를 죽은 상태로 만드는 것은 이벤트 관리자 클래스에서만 접근 가능하게 해야함.
+	//아무 클래스나 접근하게 하면 문제 발생
+private:
+	void SetDead() { m_bAlive = false; }
+
+
 public:
 	void CreateCollider();
 
@@ -49,5 +60,7 @@ public:
 	virtual void OnCollisionEnter(CCollider* _pOther);
 	virtual void OnCollisionExit(CCollider* _pOther);
 
+	//오브젝트의 사망처리를 관리하기 위해 friend 선언
+	friend class CEventMgr;
 };
 

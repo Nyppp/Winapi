@@ -12,6 +12,8 @@ private:
     float   m_fCurTime;
     float   m_fRandomTime;
 
+    int m_iHP;
+
 public:
     float GetSpeed() { return m_fSpeed; }
     void SetSpeed(float _f) { m_fSpeed = _f; }

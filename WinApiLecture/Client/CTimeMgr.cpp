@@ -52,6 +52,16 @@ void CTimeMgr::update()
 
 	//시간값 구한 후, 다음 프레임도 계산하기 위해 이전시간값을 현재 시간값으로 변경
 	m_llPrevCount = m_llCurCount;
+
+	//디버그 모드 전용 코드
+#ifdef _DEBUG
+	//디버그 모드에서는 60프레임으로 고정
+	if (m_dDT > (1. / 60.))
+	{
+		m_dDT = (1. / 60.);
+	}
+#endif // _DEBUG
+
 }
 
 void CTimeMgr::render()

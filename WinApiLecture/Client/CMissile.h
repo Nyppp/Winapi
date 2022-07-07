@@ -27,5 +27,8 @@ public:
         m_vDir = _vDir; 
         m_vDir.normalize();
     }
+
+public:
+    virtual void OnCollisionEnter(CCollider* _pOther);
 };
 

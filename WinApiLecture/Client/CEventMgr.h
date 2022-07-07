@@ -15,6 +15,8 @@ class CEventMgr
 private:
 	vector<tEvent> m_vecEvent;
 
+	vector<CObject*> m_vecDeadObj;
+
 public:
 	void update();
 

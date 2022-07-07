@@ -8,7 +8,7 @@
 
 
 
-CCollisionMgr::CCollisionMgr() : m_arrCheck{}
+CCollisionMgr::CCollisionMgr() : m_arrCheck{}, m_mapColInfo{}
 {
 
 }
@@ -93,13 +93,13 @@ void CCollisionMgr::CollisionUpdateGroup(GROUP_TYPE _eLeft, GROUP_TYPE _eRight)
 		for (size_t j = 0; j < vecRight.size(); ++j)
 		{
 			//해당 오브젝트의 충돌체가 없다면 해당 오브젝트 생략
-			if (vecRight[i]->GetCollider() == nullptr)
+			if (vecRight[j]->GetCollider() == nullptr)
 			{
 				continue;
 			}
 
 			//자기 자신을 충돌하려 하는 경우도 생략
-			if (vecLeft[i] == vecRight[i])
+			if (vecLeft[i] == vecRight[j])
 			{
 				continue;
 			}
@@ -128,17 +128,28 @@ void CCollisionMgr::CollisionUpdateGroup(GROUP_TYPE _eLeft, GROUP_TYPE _eRight)
 				if (iter->second == true)
 				{
 					//이전에도 충돌중이었고, 지금도 충돌 중
+					//만약 두 충돌체 중 한 충돌체가 삭제 대기가 걸려있다면, 충돌을 끝냄
+					if (vecLeft[i]->IsDead() || vecRight[j]->IsDead())
+					{
+						pLeftCol->OnCollisionExit(pRightCol);
+						pRightCol->OnCollisionExit(pLeftCol);
+						iter->second == false;
+					}
+
 					pLeftCol->OnCollision(pRightCol);
 					pRightCol->OnCollision(pLeftCol);
 				}
 
 				else
 				{
-					//지금 충돌 시작
-					pLeftCol->OnCollisionEnter(pRightCol);
-					pRightCol->OnCollisionEnter(pLeftCol);
+					if (vecLeft[i]->IsDead() == false && vecRight[j]->IsDead() == false)
+					{
+						//지금 충돌 시작, 이전에는 충돌하지 않았음
+						pLeftCol->OnCollisionEnter(pRightCol);
+						pRightCol->OnCollisionEnter(pLeftCol);
 
-					iter->second = true;
+						iter->second = true;
+					}
 				}
 			}
 			//충돌이 아닌 경우
