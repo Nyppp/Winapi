@@ -8,6 +8,18 @@ CObject::CObject() : m_vPos{}, m_vScale{}, m_pCollider(nullptr), m_bAlive(true)
 {
 }
 
+CObject::CObject(const CObject& _origin)
+	: m_strName(_origin.m_strName),
+	m_vPos(_origin.m_vPos),
+	m_vScale(_origin.m_vScale),
+	m_pCollider(nullptr), m_bAlive(true)
+{
+	//콜라이더는 콜라이더에 따로 선언한 복사생성자 사용해 대입
+	m_pCollider = new CCollider(*_origin.m_pCollider);
+	//CreateCollider에서 수행하던 Owner 지정도 해준다
+	m_pCollider->m_pOwner = this;
+}
+
 CObject::~CObject()
 {
 	if (m_pCollider != nullptr)

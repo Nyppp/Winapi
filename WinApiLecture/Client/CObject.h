@@ -17,6 +17,7 @@ private:
 
 public:
 	CObject();
+	CObject(const CObject& _origin);
 	virtual ~CObject();
 
 public:
@@ -43,6 +44,11 @@ public:
 	virtual void render(HDC _dc);
 
 	void component_render(HDC _dc);
+
+	//자신의 복제본을 되돌려주는 역할
+	//이 함수를 자식 클래스에서 정의할 때, 얕은 복사(기본 복사생성자)를 사용해도 문제가 없는지 체크해야 함
+	//ex) 고유한 멤버변수를 사용하거나 포인터를 사용하는 클래스에 한해서는 따로 복사 생성자를 정의해야 함
+	virtual CObject* Clone() = 0;
 
 	//오브젝트가 죽어있는지 묻는건 아무 클래스에서나 접근 가능하지만,
 	bool IsDead() { return !m_bAlive; }

@@ -18,6 +18,12 @@ public:
 	void update();
 	void render(HDC _dc);
 
+public:
 	CScene* GetCurScene() { return m_pCurScene; }
+
+private:
+	//다른 씬으로 전환하는 함수
+	void ChangeScene(SCENE_TYPE _eNext);
+	friend class CEventMgr;
 };
 

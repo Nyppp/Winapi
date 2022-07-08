@@ -19,6 +19,10 @@
 						type();\
 						~type()
 
+//오브젝트 복사에 대한 매크로 함수
+#define CLONE(type) type* Clone() {return new type(*this);}
+
+
 //특정 키가 해당 스테이트와 같은지 검사해주는 매크로 함수
 #define KEY_CHECK(key, state) CKeyMgr::GetInst()->GetKeyState(key) == state
 #define KEY_HOLD(key) KEY_CHECK(key, KEY_STATE::HOLD)

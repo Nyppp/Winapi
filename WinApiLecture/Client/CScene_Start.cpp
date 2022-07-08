@@ -8,6 +8,10 @@
 #include "CPathMgr.h"
 #include "CCollisionMgr.h"
 
+#include "CScene_Tool.h"
+#include "CKeyMgr.h"
+#include "CSceneMgr.h"
+
 void CScene_Start::Enter()
 {
 
@@ -16,6 +20,10 @@ void CScene_Start::Enter()
 	pObj->SetPos(Vec2(640.f, 384.f));
 	pObj->SetScale(Vec2(100.f, 100.f));
 	AddObject(pObj, GROUP_TYPE::PLAYER);
+
+	CObject* pOtherPlayer = pObj->Clone();
+	pOtherPlayer->SetPos(Vec2(740.f, 384.f));
+	AddObject(pOtherPlayer, GROUP_TYPE::PLAYER);
 
 	//몬스터 오브젝트 추가
 	int iMonCount = 15;
@@ -63,8 +71,21 @@ void CScene_Start::Enter()
 
 void CScene_Start::Exit()
 {
+	//씬을 나갈 때 모든 오브젝트 삭제
+	DeleteAll();
+
 	//씬을 옮길 때, 충돌 관계를 모두 초기화시킨다.
 	CCollisionMgr::GetInst()->Reset();
+}
+
+void CScene_Start::update()
+{
+	CScene::update();
+
+	if (KEY_TAP(KEY::ENTER))
+	{
+		ChangeScene(SCENE_TYPE::TOOL);
+	}
 }
 
 CScene_Start::CScene_Start()

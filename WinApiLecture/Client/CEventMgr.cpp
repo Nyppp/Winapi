@@ -64,6 +64,10 @@ void CEventMgr::Excute(const tEvent& _Event)
 	}
 		break;
 	case EVENT_TYPE::SCENE_CHANGE:
+	{
+		// lparam : 다음 씬 타입 값
+		CSceneMgr::GetInst()->ChangeScene((SCENE_TYPE)_Event.lParam);
+	}
 
 		break;
 	}

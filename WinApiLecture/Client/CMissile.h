@@ -28,6 +28,8 @@ public:
         m_vDir.normalize();
     }
 
+    CLONE(CMissile);
+
 public:
     virtual void OnCollisionEnter(CCollider* _pOther);
 };

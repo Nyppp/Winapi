@@ -12,7 +12,7 @@ private:
 	//오브젝트가 파생 클래스를 여러 개 가지게 될 때 관리가 편하기 위함
 	//그룹 갯수만큼의 오브젝트 벡터배열을 만듦
 	vector<CObject*> m_arrObj[(UINT)GROUP_TYPE::END];
-	//씬의 이름
+	//씬의 이름ㅗ
 	wstring m_strName;
 
 public:
@@ -20,10 +20,9 @@ public:
 	void SetName(const wstring& _strName) { m_strName = _strName; }
 	const wstring& GetName() { return m_strName; }
 
-	//모든 씬들이 똑같이 사용하기에 가상함수화 x
-	void update(); //씬이 보유한 모든 물체 좌표값을 업데이트
-	void finalupdate();
-	void render(HDC _dc); //그 좌표를 기준으로 모든 물체를 그려냄
+	virtual void update(); //씬이 보유한 모든 물체 좌표값을 업데이트
+	virtual void finalupdate();
+	virtual void render(HDC _dc); //그 좌표를 기준으로 모든 물체를 그려냄
 
 	//Start는 순수 가상함수. -> 순수 가상함수를 포함한 클래스는 절대 객체화 될 수 없음
 	//파생 클래스들은 모두 Start를 자신만의 버전으로 구현해야 함 -> 인터페이스.
@@ -44,6 +43,12 @@ public:
 	{
 		return m_arrObj[(UINT)_eType];
 	}
+
+	//씬에 존재하는 오브젝트 중, 특정 그룹의 오브젝트를 모두 삭제하는 함수
+	void DeleteGroup(GROUP_TYPE _eTarget);
+
+	//모든 그룹과 모든 오브젝트를 삭제하는 함수
+	void DeleteAll();
 
 public:
 	CScene();
