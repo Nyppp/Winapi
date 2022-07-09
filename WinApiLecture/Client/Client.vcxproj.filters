@@ -161,6 +161,9 @@
     <ClInclude Include="CScene_Tool.h">
       <Filter>Engine\5_Scene\Scene_Tool</Filter>
     </ClInclude>
+    <ClInclude Include="CAnimator.h">
+      <Filter>Engine\7_Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -237,6 +240,9 @@
     <ClCompile Include="func.cpp" />
     <ClCompile Include="CScene_Tool.cpp">
       <Filter>Engine\5_Scene\Scene_Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimator.cpp">
+      <Filter>Engine\7_Component</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

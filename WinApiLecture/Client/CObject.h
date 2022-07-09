@@ -1,6 +1,7 @@
 #pragma once
 
 class CCollider;
+class CAnimator;
 
 class CObject
 {
@@ -11,7 +12,9 @@ private:
 
 	wstring m_strName;
 
+	//ÄÄÆ÷³ÍÆ®
 	CCollider* m_pCollider;
+	CAnimator* m_pAnimator;
 
 	bool m_bAlive;
 

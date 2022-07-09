@@ -9,7 +9,7 @@ public:
 	float Length()
 	{
 		//벡터의 길이를 구한다.
-		return sqrt(x * x  + y * y);
+		return sqrt(x * x + y * y);
 	}
 
 	//정규화 벡터 구하는 함수
