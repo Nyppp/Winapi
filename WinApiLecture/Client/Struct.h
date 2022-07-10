@@ -9,7 +9,7 @@ public:
 	float Length()
 	{
 		//벡터의 길이를 구한다.
-		return sqrt(x * x + y * y);
+		return (float)sqrt((double)x * (double)x + (double)y * (double)y);
 	}
 
 	//정규화 벡터 구하는 함수
@@ -50,6 +50,11 @@ public:
 		return Vec2(x * _pt.x, y * _pt.y);
 	}
 
+	Vec2 operator * (int _i)
+	{
+		return Vec2(x * (float)_i, y * (float)_i);
+	}
+
 	Vec2 operator / (Vec2 _pt)
 	{
 		if (_pt.x == 0.f || _pt.y == 0.f)
@@ -57,6 +62,14 @@ public:
 			assert(false);
 		}
 		return Vec2(x / _pt.x, y / _pt.y);
+	}
+
+	Vec2 operator += (Vec2 _pt)
+	{
+		x += _pt.x;
+		y += _pt.y;
+
+		return Vec2(x, y);
 	}
 
 public:

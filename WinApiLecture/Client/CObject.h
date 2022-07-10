@@ -34,6 +34,7 @@ public:
 	const wstring& GetName() { return m_strName; }
 
 	CCollider* GetCollider() { return m_pCollider; }
+	CAnimator* GetAnimator() { return m_pAnimator; }
 
 public:
 	//가상함수에 = 0 을 붙이면, 무조건 자식 오브젝트에서의 오버라이딩 으로만 정의를 할 수 있음
@@ -64,6 +65,7 @@ private:
 
 public:
 	void CreateCollider();
+	void CreateAnimator();
 
 	virtual void OnCollision(CCollider* _pOther);
 	virtual void OnCollisionEnter(CCollider* _pOther);

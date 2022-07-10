@@ -10,6 +10,8 @@
 #include "CResMgr.h"
 #include "CPathMgr.h"
 #include "CCollider.h"
+#include "CAnimator.h"
+#include "CAnimation.h"
 
 void CPlayer::update()
 {
@@ -43,35 +45,14 @@ void CPlayer::update()
 	}
 
 	SetPos(vPos);
+
+	GetAnimator()->update();
 }
 
 void CPlayer::render(HDC _dc)
 {
-	int iWidth = (int)m_pTex->Width();
-	int iHeight = (int)m_pTex->Height();
-
-	Vec2 vPos = GetPos();
-
-	//무조건 복사
-	//BitBlt(_dc,
-	//	int(vPos.x - (float)(iWidth / 2)),
-	//	int(vPos.y - (float)(iHeight / 2)),
-	//	iWidth, iHeight,
-	//	m_pTex->GetDC(), 
-	//	0, 0, SRCCOPY);
-
-	//특정 조건을 걸어서, 해당 픽셀은 복사하지 않음 기능이 추가된 함수
-	TransparentBlt(_dc, 
-		int(vPos.x - (float)(iWidth / 2)),
-		int(vPos.y - (float)(iHeight / 2)), 
-		iWidth, iHeight, 
-		m_pTex->GetDC(),
-		0, 0, iWidth, iHeight, RGB(255,255,255));
-
-	//그러나 텍스쳐는 리소스를 불러오는 것 -> 여러 클래스가 동시에 접근하거나 생성하면 문제 발생
-	//리소스 관리자를 통해 싱글턴 객체로 관리해야 함.
-
 	//컴포넌트(충돌체와 같은 추가적으로 오브젝트에 붙는 요소들) 렌더링
+	//+ 애니메이션 렌더링
 	component_render(_dc);
 }
 
@@ -83,7 +64,7 @@ void CPlayer::CreateMissile()
 
 	//미사일을 발사하는 오브젝트의 위치(플레이어) - 플레이어 y축 넓이 절반 = 미사일이 생성되는 위치
 	Vec2 vMissilePos = GetPos();
-	vMissilePos.y -= GetScale().y / 2.f;
+	vMissilePos.y -= (GetScale().y / 2.f);
 
 	//미사일에 대한 초기 정보 설정
 	pMissile->SetPos(vMissilePos);
@@ -100,15 +81,30 @@ void CPlayer::CreateMissile()
 	CreateObject(pMissile, GROUP_TYPE::PROJ_PLAYER);
 }
 
-CPlayer::CPlayer() : m_pTex(nullptr)
+CPlayer::CPlayer()
 {
-	//텍스쳐 로딩
-	m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\Player.bmp");
 	CreateCollider();
 	
 	//오프셋을 주면, 오프셋 만큼 콜라이더 중심 좌표가 변경됨
 	GetCollider()->SetOffsetPos(Vec2(0.f, 5.f));
 	GetCollider()->SetScale(Vec2(20.f, 50.f));
+
+	//텍스쳐 로딩
+	CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\link0.bmp");
+	CreateAnimator();
+	//텍스쳐 정보를 애니메이션이 모두 알고있기에, 플레이어 클래스는 더이상 텍스쳐를 멤버로 가질 필요가 없음
+	GetAnimator()->CreateAnimation(L"WALK_DOWN", pTex, Vec2(0.f, 390.f), Vec2(90.f, 97.5f), Vec2(90.f, 0.f), 0.1f, 10);
+
+	//두번째 인자로, 애니메이션 반복 여부를 입력받음 -> 상용엔진의 animation repeat 기능
+	GetAnimator()->Play(L"WALK_DOWN", true);
+
+	CAnimation* pAnim = GetAnimator()->FindAnimation(L"WALK_DOWN");
+
+	//애니메이션 오프셋 -> 원 오브젝트와 다른 위치에 애니메이션을 렌더링 할 수 있음
+	for (int i = 0; i < pAnim->GetMaxFrame(); ++i)
+	{
+		pAnim->GetFrame(i).vOffset = Vec2(0.f, -20.f);
+	}
 }
 
 CPlayer::~CPlayer()

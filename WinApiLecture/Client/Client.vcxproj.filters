@@ -77,6 +77,15 @@
     <Filter Include="Engine\3_Manager\EventMgr">
       <UniqueIdentifier>{b9cfb0a2-003e-4338-939a-bcc4b8539a4b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\7_Component\Collider">
+      <UniqueIdentifier>{68aa4b38-e296-461c-acc4-da663d16a392}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\7_Component\Animator">
+      <UniqueIdentifier>{05942610-d15c-40d0-850a-6667f93ddae2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\7_Component\Animator\Animation">
+      <UniqueIdentifier>{d13cb12c-050f-4270-8a18-2862a07d2f91}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCore.h">
@@ -143,9 +152,6 @@
     <ClInclude Include="CResMgr.h">
       <Filter>Engine\3_Manager\ResMgr</Filter>
     </ClInclude>
-    <ClInclude Include="CCollider.h">
-      <Filter>Engine\7_Component</Filter>
-    </ClInclude>
     <ClInclude Include="SelectGDI.h">
       <Filter>Engine\8_Module</Filter>
     </ClInclude>
@@ -161,8 +167,14 @@
     <ClInclude Include="CScene_Tool.h">
       <Filter>Engine\5_Scene\Scene_Tool</Filter>
     </ClInclude>
+    <ClInclude Include="CCollider.h">
+      <Filter>Engine\7_Component\Collider</Filter>
+    </ClInclude>
     <ClInclude Include="CAnimator.h">
-      <Filter>Engine\7_Component</Filter>
+      <Filter>Engine\7_Component\Animator</Filter>
+    </ClInclude>
+    <ClInclude Include="CAnimation.h">
+      <Filter>Engine\7_Component\Animator\Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -225,9 +237,6 @@
     <ClCompile Include="CResMgr.cpp">
       <Filter>Engine\3_Manager\ResMgr</Filter>
     </ClCompile>
-    <ClCompile Include="CCollider.cpp">
-      <Filter>Engine\7_Component</Filter>
-    </ClCompile>
     <ClCompile Include="SelectGDI.cpp">
       <Filter>Engine\8_Module</Filter>
     </ClCompile>
@@ -241,8 +250,14 @@
     <ClCompile Include="CScene_Tool.cpp">
       <Filter>Engine\5_Scene\Scene_Tool</Filter>
     </ClCompile>
+    <ClCompile Include="CCollider.cpp">
+      <Filter>Engine\7_Component\Collider</Filter>
+    </ClCompile>
     <ClCompile Include="CAnimator.cpp">
-      <Filter>Engine\7_Component</Filter>
+      <Filter>Engine\7_Component\Animator</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimation.cpp">
+      <Filter>Engine\7_Component\Animator\Animation</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

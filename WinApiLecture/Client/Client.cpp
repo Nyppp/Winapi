@@ -136,6 +136,7 @@ int APIENTRY wWinMain(
             //싱글톤 패턴
 
             //메시지가 없을 때 진행
+            //메인 시작부분
             CCore::GetInst()->progress();
         }
     }

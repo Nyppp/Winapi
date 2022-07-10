@@ -3,6 +3,7 @@
 #include "CKeyMgr.h"
 #include "CTimeMgr.h"
 #include "CCollider.h"
+#include "CAnimator.h"
 
 CObject::CObject() : m_vPos{}, m_vScale{}, m_pCollider(nullptr), m_bAlive(true), m_pAnimator(nullptr)
 {
@@ -23,12 +24,23 @@ CObject::CObject(const CObject& _origin)
 		//CreateCollider에서 수행하던 Owner 지정도 해준다
 		m_pCollider->m_pOwner = this;
 	}
+
+	//애니메이터도 같은 방법으로 적용
+	if (_origin.m_pAnimator != nullptr)
+	{
+		m_pAnimator = new CAnimator(*_origin.m_pAnimator);
+		m_pAnimator->m_pOwner = this;
+	}
 }
 
 CObject::~CObject()
 {
+	//콜라이더와 애니메이터의 소멸은 각 콜라이더, 애니메이터의 소멸자를 호출하도록 함
 	if (m_pCollider != nullptr)
 		delete m_pCollider;
+
+	if (m_pAnimator != nullptr)
+		delete m_pAnimator;
 }
 
 void CObject::finalupdate()
@@ -56,12 +68,23 @@ void CObject::component_render(HDC _dc)
 	{
 		m_pCollider->render(_dc);
 	}
+
+	if (m_pAnimator != nullptr)
+	{
+		m_pAnimator->render(_dc);
+	}
 }
 
 void CObject::CreateCollider()
 {
 	m_pCollider = new CCollider;
 	m_pCollider->m_pOwner = this;
+}
+
+void CObject::CreateAnimator()
+{
+	m_pAnimator = new CAnimator;
+	m_pAnimator->m_pOwner = this;
 }
 
 void CObject::OnCollision(CCollider* _pOther)

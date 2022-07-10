@@ -133,7 +133,7 @@ void CCollisionMgr::CollisionUpdateGroup(GROUP_TYPE _eLeft, GROUP_TYPE _eRight)
 					{
 						pLeftCol->OnCollisionExit(pRightCol);
 						pRightCol->OnCollisionExit(pLeftCol);
-						iter->second == false;
+						iter->second = false;
 					}
 
 					pLeftCol->OnCollision(pRightCol);
