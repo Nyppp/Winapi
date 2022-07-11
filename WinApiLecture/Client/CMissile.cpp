@@ -2,6 +2,7 @@
 #include "CMissile.h"
 #include "CTimeMgr.h"
 #include "CCollider.h"
+#include "CCamera.h"
 
 CMissile::CMissile() : m_fTheta(PI/2.f), m_vDir(Vec2(1.f,1.f))
 {
@@ -40,9 +41,11 @@ void CMissile::render(HDC _dc)
 	Vec2 vPos = GetPos();
 	Vec2 vScale = GetScale();
 
+	Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(vPos);
+
 	Ellipse(_dc,
-		(int)(vPos.x - vScale.x / 2.f), (int)(vPos.y - vScale.y / 2.f),
-		(int)(vPos.x + vScale.x / 2.f), (int)(vPos.y + vScale.y / 2.f));
+		(int)(vRenderPos.x - vScale.x / 2.f), (int)(vRenderPos.y - vScale.y / 2.f),
+		(int)(vRenderPos.x + vScale.x / 2.f), (int)(vRenderPos.y + vScale.y / 2.f));
 
 	component_render(_dc);
 }

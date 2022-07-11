@@ -7,6 +7,7 @@
 #include "CPathMgr.h"
 #include "CCollisionMgr.h"
 #include "CEventMgr.h"
+#include "CCamera.h"
 
 //CCore* CCore::g_pInst = nullptr;
 //CObject g_obj;
@@ -85,6 +86,7 @@ void CCore::progress()
 	//매니저 업데이트 -> 시간 기반 업데이트 -> fixedupdate와 유사함
 	CTimeMgr::GetInst()->update(); //시간값을 가져와서 프레임기준 시간을 가져오고
 	CKeyMgr::GetInst()->update(); //키 매니저를 통해 어떤 키가 눌렸는지 체크하고
+	CCamera::GetInst()->update(); //카메라 업데이트
 	
 	
 	//씬 업데이트

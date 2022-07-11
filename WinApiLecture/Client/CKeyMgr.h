@@ -23,6 +23,7 @@ enum class KEY
 	Q, W, E, R, T, Y, U, I, O, P,
 	A, S, D, F, G, Z, X, C, V, B,
 	ALT, LSHIFT, SPACE, CTRL, ENTER, ESC, 
+	LBTN, RBTN,
 	LAST
 };
 
@@ -51,6 +52,7 @@ class CKeyMgr
 private:
 	//벡터 인덱스 = 키 열거체 번호 = 키 값
 	vector<tKeyInfo> m_vecKey;
+	Vec2 m_vCurMousePos;
 
 public:
 	void init();
@@ -58,5 +60,6 @@ public:
 
 public:
 	KEY_STATE GetKeyState(KEY _eKey) { return m_vecKey[(int)_eKey].eState; }
+	Vec2 GetMousePos() { return m_vCurMousePos; }
 };
 

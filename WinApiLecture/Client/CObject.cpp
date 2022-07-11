@@ -4,6 +4,7 @@
 #include "CTimeMgr.h"
 #include "CCollider.h"
 #include "CAnimator.h"
+#include "CCamera.h"
 
 CObject::CObject() : m_vPos{}, m_vScale{}, m_pCollider(nullptr), m_bAlive(true), m_pAnimator(nullptr)
 {
@@ -52,12 +53,12 @@ void CObject::finalupdate()
 //오브젝트가 자기 자신을 그려냄
 void CObject::render(HDC _dc)
 {
-	m_vPos;
-	m_vScale;
+
+	Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(m_vPos);
 
 	Rectangle(_dc,
-		(int)(m_vPos.x - m_vScale.x / 2.f), (int)(m_vPos.y - m_vScale.y / 2.f),
-		(int)(m_vPos.x + m_vScale.x / 2.f), (int)(m_vPos.y + m_vScale.y / 2.f));
+		(int)(vRenderPos.x - m_vScale.x / 2.f), (int)(vRenderPos.y - m_vScale.y / 2.f),
+		(int)(vRenderPos.x + m_vScale.x / 2.f), (int)(vRenderPos.y + m_vScale.y / 2.f));
 
 	component_render(_dc);
 }

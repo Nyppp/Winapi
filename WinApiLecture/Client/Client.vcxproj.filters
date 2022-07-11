@@ -86,6 +86,9 @@
     <Filter Include="Engine\7_Component\Animator\Animation">
       <UniqueIdentifier>{d13cb12c-050f-4270-8a18-2862a07d2f91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\3_Manager\Camera">
+      <UniqueIdentifier>{006af8db-2693-484b-97cf-ad4447e93e26}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCore.h">
@@ -176,6 +179,9 @@
     <ClInclude Include="CAnimation.h">
       <Filter>Engine\7_Component\Animator\Animation</Filter>
     </ClInclude>
+    <ClInclude Include="CCamera.h">
+      <Filter>Engine\3_Manager\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -258,6 +264,9 @@
     </ClCompile>
     <ClCompile Include="CAnimation.cpp">
       <Filter>Engine\7_Component\Animator\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="CCamera.cpp">
+      <Filter>Engine\3_Manager\Camera</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

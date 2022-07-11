@@ -30,6 +30,9 @@
 #define KEY_AWAY(key) KEY_CHECK(key, KEY_STATE::AWAY)
 #define KEY_NONE(key) KEY_CHECK(key, KEY_STATE::NONE)
 
+//마우스 위치 반환 매크로
+#define MOUSE_POS CKeyMgr::GetInst()->GetMousePos()
+
 #define PI 3.1415926535f
 
 //시간값 가져오는 매크로 함수

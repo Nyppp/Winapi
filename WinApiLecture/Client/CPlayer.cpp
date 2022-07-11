@@ -93,7 +93,7 @@ CPlayer::CPlayer()
 	CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\link0.bmp");
 	CreateAnimator();
 	//텍스쳐 정보를 애니메이션이 모두 알고있기에, 플레이어 클래스는 더이상 텍스쳐를 멤버로 가질 필요가 없음
-	GetAnimator()->CreateAnimation(L"WALK_DOWN", pTex, Vec2(0.f, 390.f), Vec2(90.f, 97.5f), Vec2(90.f, 0.f), 0.1f, 10);
+	GetAnimator()->CreateAnimation(L"WALK_DOWN", pTex, Vec2(0.f,260.f), Vec2(60.f, 65.f), Vec2(60.f, 0.f), 0.1f, 10);
 
 	//두번째 인자로, 애니메이션 반복 여부를 입력받음 -> 상용엔진의 animation repeat 기능
 	GetAnimator()->Play(L"WALK_DOWN", true);

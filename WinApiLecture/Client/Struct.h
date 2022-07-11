@@ -55,6 +55,11 @@ public:
 		return Vec2(x * (float)_i, y * (float)_i);
 	}
 
+	Vec2 operator * (float _f)
+	{
+		return Vec2(x * _f, y * _f);
+	}
+
 	Vec2 operator / (Vec2 _pt)
 	{
 		if (_pt.x == 0.f || _pt.y == 0.f)
@@ -62,6 +67,15 @@ public:
 			assert(false);
 		}
 		return Vec2(x / _pt.x, y / _pt.y);
+	}
+
+	Vec2 operator / (float _f)
+	{
+		if (_f == 0.f)
+		{
+			assert(false);
+		}
+		return Vec2(x / _f, y / _f);
 	}
 
 	Vec2 operator += (Vec2 _pt)

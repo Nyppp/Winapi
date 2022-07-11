@@ -5,6 +5,7 @@
 #include "CObject.h"
 #include "CCore.h"
 #include "CTimeMgr.h"
+#include "CCamera.h"
 
 CAnimation::CAnimation()
 	: m_pAnimator(nullptr),
@@ -62,6 +63,8 @@ void CAnimation::render(HDC _dc)
 
 	vPos += m_vecFrm[m_iCurFrm].vOffset;
 
+	vPos = CCamera::GetInst()->GetRenderPos(vPos);
+
 	TransparentBlt(_dc,
 		(int)(vPos.x - m_vecFrm[m_iCurFrm].vSlice.x / 2.f),
 		(int)(vPos.y - m_vecFrm[m_iCurFrm].vSlice.y / 2.f),
@@ -85,7 +88,7 @@ void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vSte
 		frm.fDuration = _fDuration;
 		frm.vSlice = _vSliceSize;
 		//i가 0부터 시작하기 때문에 첫번째는 좌상단 그대로 이어감.
-		frm.vLT = _vLT + _vStep * i;
+		frm.vLT = _vLT + _vStep * (int)i;
 
 		m_vecFrm.push_back(frm);
 	}
