@@ -4,7 +4,7 @@
 #include "CTexture.h"
 
 
-CTile::CTile() : m_pTileTex(nullptr), m_iIdx(20)
+CTile::CTile() : m_pTileTex(nullptr), m_iImgIdx(0)
 {
 	//타일은 모두 64x64픽셀로 고정
 	SetScale(Vec2(TILE_SIZE, TILE_SIZE));
@@ -18,7 +18,7 @@ CTile::~CTile()
 void CTile::render(HDC _dc)
 {
 	//텍스쳐가 없으면 화면에 그리지 않는다.
-	if (m_pTileTex == nullptr || m_iIdx == -1)
+	if (m_pTileTex == nullptr || m_iImgIdx == -1)
 	{
 		return;
 	}
@@ -31,8 +31,8 @@ void CTile::render(HDC _dc)
 	UINT iMaxRow = iHeight / TILE_SIZE;
 
 
-	UINT iCurRow = (UINT)m_iIdx / iMaxRow;
-	UINT iCurCol = (UINT)m_iIdx % iMaxCol;
+	UINT iCurRow = (UINT)m_iImgIdx / iMaxRow;
+	UINT iCurCol = (UINT)m_iImgIdx % iMaxCol;
 
 	//행은 나머지 연산이기에, 범위를 초과할 일이 없지만 열은 초과할 가능성이 있음 -> 예외처리
 	if (iCurRow >= iMaxRow)

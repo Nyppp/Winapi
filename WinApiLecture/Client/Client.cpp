@@ -245,6 +245,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //bool bLbtDown = false;
 
 
+
+INT_PTR CALLBACK TileCountProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
@@ -265,7 +268,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
                 //툴 씬에서 사용할 타일 갯수 조정 메뉴
             case ID_MENU_TILE:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_TILE_COUNT), hWnd, TileCountProc);
+            {
+                INT_PTR iRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_TILE_COUNT), hWnd, TileCountProc);
+
+                if (iRet == IDOK)
+                {
+
+                }
+            }
                 break;
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);
@@ -448,5 +458,3 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return (INT_PTR)FALSE;
 }
-
-INT_PTR CALLBACK TileCountProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);

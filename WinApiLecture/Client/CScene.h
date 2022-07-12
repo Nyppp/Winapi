@@ -14,13 +14,19 @@ private:
 	//오브젝트가 파생 클래스를 여러 개 가지게 될 때 관리가 편하기 위함
 	//그룹 갯수만큼의 오브젝트 벡터배열을 만듦
 	vector<CObject*> m_arrObj[(UINT)GROUP_TYPE::END];
-	//씬의 이름ㅗ
+	//씬의 이름
 	wstring m_strName;
+
+	//타일의 가로, 세로 갯수
+	UINT m_iTileX;
+	UINT m_iTileY;
 
 public:
 	//씬 이름에 대한 getter, setter
 	void SetName(const wstring& _strName) { m_strName = _strName; }
 	const wstring& GetName() { return m_strName; }
+	UINT GetTileX() { return m_iTileX; }
+	UINT GetTileY() { return m_iTileY; }
 
 	virtual void update(); //씬이 보유한 모든 물체 좌표값을 업데이트
 	virtual void finalupdate();
@@ -51,6 +57,9 @@ public:
 
 	//모든 그룹과 모든 오브젝트를 삭제하는 함수
 	void DeleteAll();
+
+	//가로 세로 정보가 주어지면 씬에 타일을 그리는 함수
+	void CreateTile(UINT _iXCount, UINT _iYCount);
 
 public:
 	CScene();

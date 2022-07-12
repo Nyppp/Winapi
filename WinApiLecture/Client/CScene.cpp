@@ -1,10 +1,12 @@
 #include "pch.h"
 #include "CScene.h"
 #include "CObject.h"
+#include "CTile.h"
+#include "CResMgr.h"
 
 CScene::CScene()
+	: m_iTileX(0), m_iTileY(0)
 {
-
 }
 
 CScene::~CScene()
@@ -81,5 +83,26 @@ void CScene::DeleteAll()
 	for (UINT i = 0; i < (UINT)GROUP_TYPE::END; ++i)
 	{
 		DeleteGroup((GROUP_TYPE)i);
+	}
+}
+
+void CScene::CreateTile(UINT _iXCount, UINT _iYCount)
+{
+	CTexture* pTileTex = CResMgr::GetInst()->LoadTexture(L"Tile", L"texture\\tile\\Tile.bmp");
+
+	for (int i = 0; i < _iYCount; ++i)
+	{
+		for (int j = 0; j < _iXCount; ++j)
+		{
+			CTile* pTile = new CTile();
+
+			pTile->SetPos(Vec2(float(TILE_SIZE * j), float(TILE_SIZE * i)));
+			pTile->SetTexture(pTileTex);
+
+			AddObject(pTile, GROUP_TYPE::TILE);
+
+			m_iTileX = _iXCount;
+			m_iTileY = _iYCount;
+		}
 	}
 }

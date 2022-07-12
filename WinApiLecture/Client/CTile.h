@@ -10,13 +10,18 @@ private:
     CTexture* m_pTileTex;
 
     // -1이면, 아무것도 참조하지 않게 하기위해 int로 지정
-    int m_iIdx;
+    int m_iImgIdx;
 
 
 public:
     void SetTexture(CTexture* _pTex)
     {
         m_pTileTex = _pTex;
+    }
+
+    void AddImgIdx()
+    {
+        ++m_iImgIdx;
     }
 
 private:
