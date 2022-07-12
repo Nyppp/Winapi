@@ -33,7 +33,7 @@ void CSceneMgr::init()
 	//m_arrScene[(UINT)SCENE_TYPE::STAGE_02] = new CScene_Start;
 
 	//현재 씬 지정
-	m_pCurScene = m_arrScene[(UINT)SCENE_TYPE::START];
+	m_pCurScene = m_arrScene[(UINT)SCENE_TYPE::TOOL];
 	//Enter는 가상함수기에 포인터가 가리키는 클래스의 Enter함수로 동작
 	m_pCurScene->Enter();
 }

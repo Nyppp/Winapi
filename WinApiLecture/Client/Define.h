@@ -35,6 +35,8 @@
 
 #define PI 3.1415926535f
 
+#define TILE_SIZE 64
+
 //시간값 가져오는 매크로 함수
 #define fDT CTimeMgr::GetInst()->GetfDT()
 
@@ -44,6 +46,7 @@
 enum class GROUP_TYPE
 {
 	DEFAULT,
+	TILE,
 	PLAYER,
 	MONSTER,
 	PROJ_PLAYER,	//플레이어가 쏜 투사체

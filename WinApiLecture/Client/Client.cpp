@@ -1,6 +1,6 @@
 ﻿// Client.cpp : 애플리케이션에 대한 진입점을 정의합니다.
 //
-#include "pch.h"
+#include "global.h"
 #include "framework.h"
 #include "Client.h"
 #include "CCore.h"
@@ -255,11 +255,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // 메뉴 선택을 구문 분석합니다:
             switch (wmId)
             {
+                //윈도우는 창을 모달 방식으로 띄움 -> 모든 포커스가 새로 나타나는 창으로 집중됨
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
             case IDM_EXIT:
                 DestroyWindow(hWnd);
+                break;
+
+                //툴 씬에서 사용할 타일 갯수 조정 메뉴
+            case ID_MENU_TILE:
+                DialogBox(hInst, MAKEINTRESOURCE(IDD_TILE_COUNT), hWnd, TileCountProc);
                 break;
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);
@@ -442,3 +448,5 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return (INT_PTR)FALSE;
 }
+
+INT_PTR CALLBACK TileCountProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);

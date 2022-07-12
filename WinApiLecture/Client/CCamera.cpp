@@ -7,7 +7,7 @@
 
 
 CCamera::CCamera()
-	: m_pTargetObj(nullptr), m_fTime(1.f), m_fSpeed(0.f), m_fAccTime(0.f)
+	: m_pTargetObj(nullptr), m_fTime(1.f), m_fSpeed(0.f), m_fAccTime(1.f)
 {
 
 }
@@ -26,7 +26,7 @@ void CCamera::update()
 		//dead처리된 오브젝트라면, 할당 해제
 		if (m_pTargetObj->IsDead() == true)
 		{
-			m_pTargetObj == nullptr;
+			m_pTargetObj = nullptr;
 		}
 		else
 		{
@@ -58,27 +58,27 @@ void CCamera::update()
 //화면 중앙값과 카메라 좌표의 차를 계산하는 함수
 void CCamera::CalDiff()
 {
-	////시간제한에 따른 등속 카메라 이동
-	//m_fAccTime += fDT;
+	//시간제한에 따른 등속 카메라 이동
+	m_fAccTime += fDT;
 
-	//if (m_fAccTime > m_fTime)
-	//{
-	//m_vCurLookAt = m_vLookAt;
-	//}
-	//else
-	//{
-	////카메라 위치가 바뀌었을 때, 이동해야 할 방향
+	if (m_fAccTime > m_fTime)
+	{
+	m_vCurLookAt = m_vLookAt;
+	}
+	else
+	{
+	//카메라 위치가 바뀌었을 때, 이동해야 할 방향
 
-	////m_vLookAt -> 목표 좌표 / m_vPrevLookAt 현재 좌표
-	//Vec2 vLookDir = (m_vLookAt - m_vPrevLookAt);
+		//m_vLookAt -> 목표 좌표 / m_vPrevLookAt 현재 좌표
+		Vec2 vLookDir = (m_vLookAt - m_vPrevLookAt);
 
-	//m_vCurLookAt = m_vPrevLookAt + vLookDir.normalize() * m_fSpeed * fDT;
-	//}
+		m_vCurLookAt = m_vPrevLookAt + vLookDir.normalize() * m_fSpeed * fDT;
+	}
 
-	//남은 이동거리 제한에 따른 가속 카메라 이동(Unity Engine - Lerp)
-	float fMoveDist = (m_vLookAt - m_vCurLookAt).Length();
+	//부드러운 카메라 이동
+	/*float fMoveDist = (m_vLookAt - m_vCurLookAt).Length();
 
-	if (fMoveDist < 5.f)
+	if (m_fSpeed < 10.f)
 	{
 		m_vCurLookAt = m_vLookAt;
 	}
@@ -90,7 +90,8 @@ void CCamera::CalDiff()
 		m_vCurLookAt = m_vPrevLookAt + vLookDir.normalize() * m_fSpeed * fDT * 2.f;
 
 		m_fSpeed = (fMoveDist / (m_fTime));
-	}
+		
+	}*/
 
 	//이전 LookAt과 현재 LookAt의 차이를 보정해서 현재 LookAt을 계산
 	Vec2 vResolution = CCore::GetInst()->GetResolution();

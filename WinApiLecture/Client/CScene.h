@@ -1,5 +1,7 @@
 #pragma once
 
+#include "global.h"
+
 //전방선언으로 가져오는 객체는 포인터밖에 쓸 수 없음 -> 컴파일 속도에 영향을 끼치지 않기 위해서
 class CObject;
 
