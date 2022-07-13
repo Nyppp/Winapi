@@ -37,3 +37,6 @@
 
 #include "C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CPathMgr.cpp"
 
+
+#include "C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CPlayer.cpp"
+

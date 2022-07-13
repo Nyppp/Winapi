@@ -46,8 +46,12 @@ CObject::~CObject()
 
 void CObject::finalupdate()
 {
+	//오브젝트 단위의 업데이트(이동, 렌더링)을 마치면, 그 다음에는 콜라이더, 애니메이션 처리
 	if (m_pCollider)
 		m_pCollider->finalupdate();
+
+	if (m_pAnimator)
+		m_pAnimator->finalupdate();
 }
 
 //오브젝트가 자기 자신을 그려냄

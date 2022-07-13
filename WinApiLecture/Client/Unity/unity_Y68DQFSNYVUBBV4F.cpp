@@ -1,7 +1,4 @@
 
-#include "C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CPlayer.cpp"
-
-
 #include "C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CRes.cpp"
 
 
@@ -30,6 +27,9 @@
 
 
 #include "C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CTimeMgr.cpp"
+
+
+#include "C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CUI.cpp"
 
 
 #include "C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\func.cpp"

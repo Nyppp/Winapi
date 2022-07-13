@@ -52,6 +52,7 @@ enum class GROUP_TYPE
 	PROJ_PLAYER,	//플레이어가 쏜 투사체
 	PROJ_MONSTER,	//몬스터가 쏜 투사체
 
+	UI = 31, //UI는 모든 물체들보다 우선적으로 출력되어야 함 -> 열거체에서 가장 뒤쪽에 배치
 	END = 32,
 };
 

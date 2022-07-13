@@ -7,6 +7,7 @@
 #include "CResMgr.h"
 #include "resource.h"
 #include "CSceneMgr.h"
+#include "CUI.h"
 
 CScene_Tool::CScene_Tool()
 {
@@ -28,8 +29,24 @@ void CScene_Tool::Enter()
 	CreateTile(5, 5);
 
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
+
+	//ui 생성
+	CUI* pUI = new CUI;
+	pUI->SetScale(Vec2(200.f, 300.f));
+	pUI->SetPos(Vec2(vResolution.x - pUI->GetScale().x, 0.f));
+
+	CUI* pChildUI = new CUI;
+	pChildUI->SetScale(Vec2(100.f, 100.f));
+	pChildUI->SetPos(Vec2(0.f, 0.f));
+
+	pUI->AddChild(pChildUI);
+
+	//씬에서는 부모 UI만 알고 있지만, 부모UI가 포함하고 있는 자식UI의 렌더링, 업데이트는 부모UI를 통해 동작함.
+	AddObject(pUI, GROUP_TYPE::UI);
+
 	//기본 카메라 세팅 -> 전체 해상도의 정 중앙 위치
 	CCamera::GetInst()->SetLookAt(vResolution / 2.f);
+
 }
 
 void CScene_Tool::Exit()
@@ -52,12 +69,21 @@ void CScene_Tool::SetTileIdx()
 		UINT iTileY = GetTileY();
 
 		//마우스 좌표를 타일 사이즈로 나누면, 몇행 몇열을 가리키는지 알 수 있음
-		UINT iCol = (UINT)vMousePos.x / TILE_SIZE;
-		UINT iRow = (UINT)vMousePos.y / TILE_SIZE;
+		int iCol = (int)vMousePos.x / TILE_SIZE;
+		int iRow = (int)vMousePos.y / TILE_SIZE;
+
+		//마우스 좌표가 음수 -> 0번째 타일에 대해 살짝 옆으로 가서 음수 위치에서 클릭하면,
+		//iCol이 음수여도 0이 되기에  마우스 자체 좌표가 음수인지 체크하여 판단
+		if (vMousePos.x < 0.f || iCol >= iTileX
+			|| vMousePos.y < 0.f || iRow >= iTileY)
+		{
+			return;
+		}
 
 		UINT iIdx = (iRow * iTileX) + iCol;
 
 		const vector<CObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
+
 		if (iIdx >= vecTile.size())
 		{
 			return;

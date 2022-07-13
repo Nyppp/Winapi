@@ -21,6 +21,7 @@ public:
 
     void AddImgIdx()
     {
+        //TODO : 텍스쳐 갯수를 넘어선 클릭이 들어오면 nullptr exception 발생
         ++m_iImgIdx;
     }
 

@@ -92,6 +92,9 @@
     <Filter Include="Engine\4_Object\Tile">
       <UniqueIdentifier>{418e078c-3fbf-4b16-88f1-cce95b2c16a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\4_Object\UI">
+      <UniqueIdentifier>{9d2873c2-9786-48a8-929e-23bc56404f27}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCore.h">
@@ -191,6 +194,9 @@
     <ClInclude Include="global.h">
       <Filter>Engine\1_Header</Filter>
     </ClInclude>
+    <ClInclude Include="CUI.h">
+      <Filter>Engine\4_Object\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -279,6 +285,9 @@
     </ClCompile>
     <ClCompile Include="CTile.cpp">
       <Filter>Engine\4_Object\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="CUI.cpp">
+      <Filter>Engine\4_Object\UI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

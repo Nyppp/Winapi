@@ -41,6 +41,21 @@ void CAnimator::render(HDC _dc)
 	}
 }
 
+void CAnimator::finalupdate()
+{
+	if (m_pCurAnim != nullptr)
+	{
+		m_pCurAnim->update();
+
+		//C++코드 최적화 -> AND 연산자에서 앞의것이 FALSE면 뒤의것은 검사 X
+		//그래서 AND연산자의 앞부분에, 검사 수행이 적은 것을 먼저 적는다.
+		if (m_bRepeat == true && m_pCurAnim->IsFinish() == true)
+		{
+			m_pCurAnim->SetFrame(0);
+		}
+	}
+}
+
 //텍스쳐 이름, 텍스쳐, 좌상단 위치, 애니메이션 텍스쳐 크기, 다음 프레임으로 넘어가기 위해 좌상단 이동거리, 프레임 갯수
 void CAnimator::CreateAnimation(const wstring& _strName, CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep, float _fDuration, UINT _iFrameCount)
 {

@@ -26,6 +26,7 @@ public:
 
 	void update();
 	void render(HDC _dc);
+	void finalupdate();
 
 	CObject* GetObj() { return m_pOwner; }
 
