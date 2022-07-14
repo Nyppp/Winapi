@@ -31,11 +31,15 @@ void CScene_Tool::Enter()
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
 
 	//ui 생성
-	CUI* pUI = new CUI;
+	CUI* pUI = new CUI(false);
+	pUI->SetName(L"ParentUI");
 	pUI->SetScale(Vec2(200.f, 300.f));
 	pUI->SetPos(Vec2(vResolution.x - pUI->GetScale().x, 0.f));
 
-	CUI* pChildUI = new CUI;
+	//자식 UI의 배치 -> 직접 자식UI를 씬에 배치하고 렌더링하는게 아니라,
+	//부모 UI가 해당 정보를 가지고 있으며, 렌더링과 배치를 부모UI 클래스에서 함께 동작한다.
+	CUI* pChildUI = new CUI(false);
+	pChildUI->SetName(L"ChildUI");
 	pChildUI->SetScale(Vec2(100.f, 100.f));
 	pChildUI->SetPos(Vec2(0.f, 0.f));
 

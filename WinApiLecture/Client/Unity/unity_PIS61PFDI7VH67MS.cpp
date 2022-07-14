@@ -1,19 +1,4 @@
 
-#include "C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CRes.cpp"
-
-
-#include "C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CResMgr.cpp"
-
-
-#include "C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CScene.cpp"
-
-
-#include "C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CSceneMgr.cpp"
-
-
-#include "C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CScene_Start.cpp"
-
-
 #include "C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CScene_Tool.cpp"
 
 
@@ -30,6 +15,9 @@
 
 
 #include "C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CUI.cpp"
+
+
+#include "C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CUIMgr.cpp"
 
 
 #include "C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\func.cpp"

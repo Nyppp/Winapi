@@ -13,11 +13,21 @@ private:
 
     Vec2 m_vFinalPos;
 
+    //UI가 카메라를 따라 움직이는지 유무
+    bool m_bCameraAffected;
+    //마우스가 ui위에 있는지 유무
+    bool m_bMouseOn;
+    //UI가 클릭된 적 있는지 유무
+    bool m_bLbtnDown;
+
 public:
     CUI* GetParent() { return m_pParentUI; }
     void AddChild(CUI* _pUI) { m_vecChildUI.push_back(_pUI); _pUI->m_pParentUI = this; }
-
     Vec2 GetFinalPos() { return m_vFinalPos; }
+
+    const vector<CUI*>& GetChildUI() { return m_vecChildUI; }
+
+    bool isMouseOn() { return m_bMouseOn; }
 
 private:
     void update_child();
@@ -29,10 +39,29 @@ public:
     virtual void update();
     virtual void render(HDC _dc);
     virtual void finalupdate();
+
+    void MouseOnCheck();
+
     CLONE(CUI);
 
+    //UI 이벤트
 public:
-    CUI();
-    ~CUI();
+    virtual void MouseOn(); //UI위에 마우스가 올라감
+    virtual void MouseLbtnDown(); //UI위에서 마우스 왼쪽버튼이 눌려있음
+    virtual void MouseLbtnUp(); //왼클릭 끝날 때
+    virtual void MouseLbtnCliked(); //클릭 -> 한 순간에 눌리고 떼진 동작에 대한 이벤트
+
+    //click 이벤트와 down 이벤트의 차이
+    //down 이벤트 -> 눌려있지만, 떼지않음 or 눌린 채로 다른곳으로 마우스 드래그 하여 ui 벗어난 채로 마우스버튼 뗴면 btnup 호출x
+    //clikc 이벤트 -> 해당 UI를 누르고, 떼는 과정이 둘다 포함된 이벤트
+
+
+
+public:
+    //카메라 영향 변수는 반드시 필요하기에, 기본 생성자를 없애고 인자를 받도록 설정
+    CUI(bool _bCamAff);
+    virtual ~CUI();
+
+    friend class CUIMgr;
 };
 

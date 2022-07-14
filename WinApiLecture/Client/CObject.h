@@ -24,6 +24,10 @@ private:
 public:
 	CObject();
 	CObject(const CObject& _origin);
+
+	//소멸자를 가상함수화 -> 모든 오브젝트는 CObject 포인터로 가리키게 되기에, 생성자는 COBject를 통해 들어가서 자신까지 생성되지만,
+	//소멸자는 CObject만 호출되고 자신은 사라지지 않을 수 있음 -> 이를 방지하기 위해서 부모 소멸자를 가상함수로 만들면,
+	//자식 클래스의 소멸자를 호출하게 됨
 	virtual ~CObject();
 
 public:

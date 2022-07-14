@@ -1,6 +1,4 @@
-﻿  unity_Y68DQFSNYVUBBV4F.cpp
-C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CScene.cpp(93,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CScene.cpp(95,21): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CScene_Tool.cpp(77,33): warning C4018: '>=': signed 또는 unsigned가 일치하지 않습니다.
-C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CScene_Tool.cpp(78,33): warning C4018: '>=': signed 또는 unsigned가 일치하지 않습니다.
+﻿  unity_PIS61PFDI7VH67MS.cpp
+C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CScene_Tool.cpp(81,33): warning C4018: '>=': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Client\CScene_Tool.cpp(82,33): warning C4018: '>=': signed 또는 unsigned가 일치하지 않습니다.
   Client.vcxproj -> C:\Users\Noh\Desktop\coding\CS\Winapi\WinApiLecture\Output\bin_Debug\Client.exe

@@ -8,6 +8,7 @@
 #include "CCollisionMgr.h"
 #include "CEventMgr.h"
 #include "CCamera.h"
+#include "CUIMgr.h"
 
 //CCore* CCore::g_pInst = nullptr;
 //CObject g_obj;
@@ -94,6 +95,9 @@ void CCore::progress()
 	
 	//충돌 체크
 	CCollisionMgr::GetInst()->update(); //그 후 씬에 담겨있는 오브젝트들의 충돌체를 업데이트
+
+	//UI이벤트 체크
+	CUIMgr::GetInst()->update();
 	
 
 	//기존 Ccore에서 프레임 기준 업데이트 : Unity 엔진에서의 Update문과 비슷한 동작으로, 매 프레임마다 동작을 하게 된다.
