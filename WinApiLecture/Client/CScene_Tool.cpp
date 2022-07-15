@@ -8,6 +8,8 @@
 #include "resource.h"
 #include "CSceneMgr.h"
 #include "CUI.h"
+#include "CPanelUI.h"
+#include "CBtnUI.h"
 
 CScene_Tool::CScene_Tool()
 {
@@ -31,22 +33,29 @@ void CScene_Tool::Enter()
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
 
 	//ui 생성
-	CUI* pUI = new CUI(false);
-	pUI->SetName(L"ParentUI");
-	pUI->SetScale(Vec2(200.f, 300.f));
-	pUI->SetPos(Vec2(vResolution.x - pUI->GetScale().x, 0.f));
+	CUI* pPanelUI = new CPanelUI;
+	pPanelUI->SetName(L"ParentUI");
+	pPanelUI->SetScale(Vec2(200.f, 300.f));
+	pPanelUI->SetPos(Vec2(vResolution.x - pPanelUI->GetScale().x, 0.f));
 
 	//자식 UI의 배치 -> 직접 자식UI를 씬에 배치하고 렌더링하는게 아니라,
 	//부모 UI가 해당 정보를 가지고 있으며, 렌더링과 배치를 부모UI 클래스에서 함께 동작한다.
-	CUI* pChildUI = new CUI(false);
-	pChildUI->SetName(L"ChildUI");
-	pChildUI->SetScale(Vec2(100.f, 100.f));
-	pChildUI->SetPos(Vec2(0.f, 0.f));
+	CUI* pBtnUI = new CBtnUI;
+	pBtnUI->SetName(L"ChildUI");
+	pBtnUI->SetScale(Vec2(100.f, 100.f));
 
-	pUI->AddChild(pChildUI);
+	//자식 UI의 포지션은 부모UI와의 상대위치를 넣게 됨
+	pBtnUI->SetPos(Vec2(0.f, 0.f));
+
+	pPanelUI->AddChild(pBtnUI);
 
 	//씬에서는 부모 UI만 알고 있지만, 부모UI가 포함하고 있는 자식UI의 렌더링, 업데이트는 부모UI를 통해 동작함.
-	AddObject(pUI, GROUP_TYPE::UI);
+	AddObject(pPanelUI, GROUP_TYPE::UI);
+
+	//클론으로 생성해서 같은  모양에, 같은 자식구조를 가졌지만 위의 pPanelUI와는 전혀 다른 객체임
+	CUI* pClonePanel = pPanelUI->Clone();
+	pClonePanel->SetPos(pClonePanel->GetPos() + Vec2(-300.f, 0.f));
+	AddObject(pClonePanel, GROUP_TYPE::UI);
 
 	//기본 카메라 세팅 -> 전체 해상도의 정 중앙 위치
 	CCamera::GetInst()->SetLookAt(vResolution / 2.f);

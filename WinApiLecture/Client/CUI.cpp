@@ -3,8 +3,21 @@
 #include "CKeyMgr.h"
 #include "SelectGDI.h"
 
-CUI::CUI(bool _bCamAff) : m_pParentUI(nullptr), m_bCameraAffected(_bCamAff), m_bMouseOn(false)
+CUI::CUI(bool _bCamAff) : m_pParentUI(nullptr), m_bCameraAffected(_bCamAff), m_bMouseOn(false), m_bLbtnDown(false)
 {
+}
+
+CUI::CUI(const CUI& _origin)
+	//자식 클래스의 복사 생성자를 선언할 때, 부모 클래스도 깊은 복사생성자가 존재한다면,
+	//부모 클래스의 복사 생성자를 사용한다고 자식 클래스의 복사 생성자에서 명시해주어야 한다.
+	: CObject(_origin),
+	m_pParentUI(nullptr), m_bCameraAffected(_origin.m_bCameraAffected), m_bMouseOn(false), m_bLbtnDown(false)
+{
+	//UI의 자식 오브젝트들 까지 모두 깊은 복사를 한다.
+	for (size_t i = 0; i < _origin.m_vecChildUI.size(); ++i)
+	{
+		AddChild(_origin.m_vecChildUI[i]->Clone());
+	}
 }
 
 CUI::~CUI()
