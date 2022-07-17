@@ -7,7 +7,7 @@
 #include "CKeyMgr.h"
 #include "CUI.h"
 
-CUIMgr::CUIMgr()
+CUIMgr::CUIMgr() : m_pFocusedUI(nullptr)
 {
 
 }
@@ -19,50 +19,42 @@ CUIMgr::~CUIMgr()
 
 void CUIMgr::update()
 {
-	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	// 1. FocusedUI 확인
+	// 기존 포커스를 유지해야 하는지, 새로운 포커스 된 ui가 있는지 판단
+	m_pFocusedUI = GetFocusedUI();
 
-	//씬에 존재하는 부모 UI들의 모음
-	const vector<CObject*>& vecUI = pCurScene->GetGroupObject(GROUP_TYPE::UI);
+	// 2. 포커스 된 ui 내에서, 자식 ui들 중 타겟인 ui를 가져온다.
+	CUI* pTargetUI = GetTargetedUI(m_pFocusedUI);
 
 	bool bLbtnTap = KEY_TAP(KEY::LBTN);
 	bool bLbtnAway = KEY_AWAY(KEY::LBTN);
 
-	//모든 UI를 탐색하며 마우스가 위에 있는지 체크
-	//그러나 특정 UI는 카메라를 따라오는 UI가 있고, 실제 좌표가 있지만 카메라 상으로 좌표가 달라지는 ui가 있음
-	for (size_t i = 0; i < vecUI.size(); ++i)
+	if (pTargetUI != nullptr)
 	{
-		CUI* pUI = (CUI*)vecUI[i];
+		pTargetUI->MouseOn();
 
-		//부모 UI를 통해 최하단 자식ui를 도출
-		pUI = GetTargetedUI(pUI);
-
-		if (pUI != nullptr)
+		//왼클릭이 됐다면 LbtnDown 이벤트 호출
+		if (bLbtnTap == true)
 		{
-			pUI->MouseOn();
-
-			//왼클릭이 됐다면 LbtnDown 이벤트 호출
-			if (bLbtnTap == true)
-			{
-				pUI->MouseLbtnDown();
-				pUI->m_bLbtnDown = true;
-			}
-
-			//해당 UI 위에서 왼클릭 해제 시 -> LbtnUp 이벤트 호출
-			else if (bLbtnAway == true)
-			{
-				pUI->MouseLbtnUp();
-
-				//UI가 눌려있는 상태에서 떼는 이벤트 둘다 발생 -> 클릭 이벤트를 호출한다.
-				if (pUI->m_bLbtnDown == true)
-				{
-					pUI->MouseLbtnCliked();
-				}
-
-				pUI->m_bLbtnDown = false;
-			}
+			pTargetUI->MouseLbtnDown();
+			pTargetUI->m_bLbtnDown = true;
 		}
 
+		//해당 UI 위에서 왼클릭 해제 시 -> LbtnUp 이벤트 호출
+		else if (bLbtnAway == true)
+		{
+			pTargetUI->MouseLbtnUp();
+
+			//UI가 눌려있는 상태에서 떼는 이벤트 둘다 발생 -> 클릭 이벤트를 호출한다.
+			if (pTargetUI->m_bLbtnDown == true)
+			{
+				pTargetUI->MouseLbtnCliked();
+			}
+
+			pTargetUI->m_bLbtnDown = false;
+		}
 	}
+	
 }
 
 CUI* CUIMgr::GetTargetedUI(CUI* _pParentUI)
@@ -131,4 +123,18 @@ CUI* CUIMgr::GetTargetedUI(CUI* _pParentUI)
 	}
 
 	return pTargetUI;
+}
+
+CUI* CUIMgr::GetFocusedUI()
+{
+	//씬에서 UI 오브젝트 모음을 받아온다.
+	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	const vector<CObject*>& vecUI = pCurScene->GetGroupObject(GROUP_TYPE::UI);
+
+	bool bLbtnTap = KEY_TAP(KEY::LBTN);
+
+	//기존 포커스 된 ui를 받아두고, 포커스된 ui가 바뀌었는지 확인
+	CUI* pFocusedUI = m_pFocusedUI;
+
+	return pFocusedUI;
 }
