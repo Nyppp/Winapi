@@ -52,6 +52,10 @@ public:
 		return m_arrObj[(UINT)_eType];
 	}
 
+	//UI오브젝트에 한해서, const 레퍼런스 타입이 아니라 그냥 레페런스 타입으로 줘서
+	//UI 사이에서 누가 포커스 우선순위가 높은지 수정하기 위해 수정가능하게끔 반환
+	vector<CObject*>& GetUIGroup() { return m_arrObj[(UINT)GROUP_TYPE::UI]; }
+
 	//씬에 존재하는 오브젝트 중, 특정 그룹의 오브젝트를 모두 삭제하는 함수
 	void DeleteGroup(GROUP_TYPE _eTarget);
 

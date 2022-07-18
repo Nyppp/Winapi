@@ -23,6 +23,12 @@ void CUIMgr::update()
 	// 기존 포커스를 유지해야 하는지, 새로운 포커스 된 ui가 있는지 판단
 	m_pFocusedUI = GetFocusedUI();
 
+	//포커스 된 UI가 없다면, 모두 비활성화 된 UI 상태이기에, 이벤트 처리가 없어야 한다.
+	if (m_pFocusedUI == nullptr)
+	{
+		return;
+	}
+
 	// 2. 포커스 된 ui 내에서, 자식 ui들 중 타겟인 ui를 가져온다.
 	CUI* pTargetUI = GetTargetedUI(m_pFocusedUI);
 
@@ -55,6 +61,37 @@ void CUIMgr::update()
 		}
 	}
 	
+}
+
+void CUIMgr::SetFocusedUI(CUI* _pUI)
+{
+	//이미 포커스 되어있다면 조기종료
+	//pUI가 널포인터 -> 모든 ui의 포커스를 해제한다는 뜻으로 간주
+	if (m_pFocusedUI == _pUI || _pUI == nullptr)
+	{
+		m_pFocusedUI = _pUI;
+		return;
+	}
+
+	m_pFocusedUI = _pUI;
+
+	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	vector<CObject*>& vecUI = pCurScene->GetUIGroup();
+
+	vector<CObject*>::iterator iter = vecUI.begin();
+
+	for (; iter != vecUI.end(); ++iter)
+	{
+		if (m_pFocusedUI == *iter)
+		{
+			break;
+		}
+	}
+
+	vecUI.erase(iter);
+
+	vecUI.push_back(m_pFocusedUI);
+
 }
 
 CUI* CUIMgr::GetTargetedUI(CUI* _pParentUI)
@@ -129,12 +166,49 @@ CUI* CUIMgr::GetFocusedUI()
 {
 	//씬에서 UI 오브젝트 모음을 받아온다.
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-	const vector<CObject*>& vecUI = pCurScene->GetGroupObject(GROUP_TYPE::UI);
+	vector<CObject*>& vecUI = pCurScene->GetUIGroup();
 
 	bool bLbtnTap = KEY_TAP(KEY::LBTN);
 
 	//기존 포커스 된 ui를 받아두고, 포커스된 ui가 바뀌었는지 확인
 	CUI* pFocusedUI = m_pFocusedUI;
+
+	//왼쪽 클릭이 아예 일어나지 않음 -> UI 포커스 변경 X -> 조기반환
+	if (bLbtnTap == false)
+	{
+		return pFocusedUI;
+	}
+
+	vector<CObject*>::iterator iter = vecUI.begin();
+
+	//반환값으로 가져갈 타켓 이터레이터 -> end로 지정해준 이유는,
+	//클릭은 일어났지만 UI가 아닌 허공을 클릭했을 때를 구분하기 위해서.
+	vector<CObject*>::iterator targetiter = vecUI.end();
+
+	//포커스가 되려면, 왼쪽 클릭이 발생해야 함 -> 해당구간은 왼쪽클릭이 일어난 경우에만 동작
+	for (; iter != vecUI.end(); ++iter)
+	{
+		//UI그룹 벡터는 0번 인덱스가 가장 뒤, 맨 뒤 인덱스가 가장 앞에 존재하는 방법으로 렌더링이 됨
+		//벡터 순서대로 클릭 여부를 검색하면, 겹쳐진 UI가 있을 때, 뒤에 있는것도 자신이 포커스 됐다고 인식을 하지만,
+		//벡터는 어차피 끝까지 탐색을 진행하기 때문에 클릭된 가장 앞 UI가 결국 포커스 전환이 됨
+		if (((CUI*)*iter)->isMouseOn())
+		{
+			targetiter = iter;
+		}
+	}
+	
+	//타겟 이터레이터가 end를 가리킨다는 뜻은, 클릭은 됐지만 ui가 대상이 아니라는 뜻 -> 이벤트 처리X
+	if (targetiter == vecUI.end())
+	{
+		return nullptr;
+	}
+
+	pFocusedUI = (CUI*)*targetiter;
+
+	//벡터 내에서 맨 뒤로 순번 교체
+	vecUI.erase(targetiter);
+
+	vecUI.push_back(pFocusedUI);
 
 	return pFocusedUI;
 }

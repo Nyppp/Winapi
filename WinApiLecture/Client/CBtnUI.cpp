@@ -20,3 +20,7 @@ void CBtnUI::MouseLbtnDown()
 void CBtnUI::MouseLbtnUp()
 {
 }
+
+void CBtnUI::MouseLbtnCliked()
+{
+}

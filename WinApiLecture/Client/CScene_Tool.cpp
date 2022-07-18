@@ -10,6 +10,7 @@
 #include "CUI.h"
 #include "CPanelUI.h"
 #include "CBtnUI.h"
+#include "CUIMgr.h"
 
 CScene_Tool::CScene_Tool()
 {
@@ -24,6 +25,13 @@ void CScene_Tool::update()
 	CScene::update();
 
 	SetTileIdx();
+
+	//ui매니저에서 구현한 ui 포커스 설정 함수를 사용해서,
+	//특정 키가 눌렸을 때 UI 우선순위를 변경할 수 있음
+	if (KEY_TAP(KEY::LSHIFT))
+	{
+		CUIMgr::GetInst()->SetFocusedUI(m_pUI);
+	}
 }
 
 void CScene_Tool::Enter()
@@ -56,6 +64,8 @@ void CScene_Tool::Enter()
 	CUI* pClonePanel = pPanelUI->Clone();
 	pClonePanel->SetPos(pClonePanel->GetPos() + Vec2(-300.f, 0.f));
 	AddObject(pClonePanel, GROUP_TYPE::UI);
+
+	m_pUI = pClonePanel;
 
 	//기본 카메라 세팅 -> 전체 해상도의 정 중앙 위치
 	CCamera::GetInst()->SetLookAt(vResolution / 2.f);
