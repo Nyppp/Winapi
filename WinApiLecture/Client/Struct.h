@@ -27,6 +27,15 @@ public:
 		return *this;
 	}
 
+	bool IsZero()
+	{
+		if (x == 0.f && y == 0.f)
+		{
+			return true;
+		}
+		return false;
+	}
+
 public:
 	//POINT 구조체를 Vec2가 대입받기 위해 대입연산자 오버로딩
 	Vec2& operator = (POINT _pt)

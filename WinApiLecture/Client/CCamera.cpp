@@ -70,9 +70,14 @@ void CCamera::CalDiff()
 	//카메라 위치가 바뀌었을 때, 이동해야 할 방향
 
 		//m_vLookAt -> 목표 좌표 / m_vPrevLookAt 현재 좌표
+		//하지만 씬 전환 시, 이전 카메라 좌표와 현재 카메라 좌표가 일치할 경우, 0 벡터에 대해 정규화를 하게 됨 -> 예외처리 필요
 		Vec2 vLookDir = (m_vLookAt - m_vPrevLookAt);
 
-		m_vCurLookAt = m_vPrevLookAt + vLookDir.normalize() * m_fSpeed * fDT;
+		if (vLookDir.IsZero() != true)
+		{
+			m_vCurLookAt = m_vPrevLookAt + vLookDir.normalize() * m_fSpeed * fDT;
+		}
+
 	}
 
 	//부드러운 카메라 이동

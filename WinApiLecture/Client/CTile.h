@@ -12,6 +12,8 @@ private:
     // -1이면, 아무것도 참조하지 않게 하기위해 int로 지정
     int m_iImgIdx;
 
+    int m_iMaximgIdx;
+
 
 public:
     void SetTexture(CTexture* _pTex)
@@ -21,13 +23,24 @@ public:
 
     void AddImgIdx()
     {
-        //TODO : 텍스쳐 갯수를 넘어선 클릭이 들어오면 nullptr exception 발생
         ++m_iImgIdx;
+
+        //텍스쳐 갯수를 넘어선 클릭이 들어오면 다시 0으로 만든다.
+        if (m_iImgIdx == m_iMaximgIdx)
+        {
+            m_iImgIdx = 0;
+        }
     }
 
 private:
     virtual void render(HDC _dc);
     virtual void update();
+
+    
+
+public:
+    virtual void Save(FILE* _pFile);
+    virtual void Load(FILE* _pFile);
 
     CLONE(CTile);
 

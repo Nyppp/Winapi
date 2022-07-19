@@ -64,6 +64,10 @@ public:
 
 	//가로 세로 정보가 주어지면 씬에 타일을 그리는 함수
 	void CreateTile(UINT _iXCount, UINT _iYCount);
+	
+	//저장된 타일 정보를 가져오는 함수
+	void LoadTile(const wstring& _strRelativePath);
+
 
 public:
 	CScene();

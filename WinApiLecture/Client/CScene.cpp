@@ -3,6 +3,7 @@
 #include "CObject.h"
 #include "CTile.h"
 #include "CResMgr.h"
+#include "CPathMgr.h"
 
 CScene::CScene()
 	: m_iTileX(0), m_iTileY(0)
@@ -71,7 +72,6 @@ void CScene::render(HDC _dc)
 	}
 }
 
-
 void CScene::DeleteGroup(GROUP_TYPE _eTarget)
 {
 	//템플릿 함수이기에 타입 지정해줘야 함
@@ -90,6 +90,11 @@ void CScene::CreateTile(UINT _iXCount, UINT _iYCount)
 {
 	CTexture* pTileTex = CResMgr::GetInst()->LoadTexture(L"Tile", L"texture\\tile\\Tile.bmp");
 
+	DeleteGroup(GROUP_TYPE::TILE);
+	
+	m_iTileX = _iXCount;
+	m_iTileY = _iYCount;
+
 	for (int i = 0; i < _iYCount; ++i)
 	{
 		for (int j = 0; j < _iXCount; ++j)
@@ -100,9 +105,37 @@ void CScene::CreateTile(UINT _iXCount, UINT _iYCount)
 			pTile->SetTexture(pTileTex);
 
 			AddObject(pTile, GROUP_TYPE::TILE);
-
-			m_iTileX = _iXCount;
-			m_iTileY = _iYCount;
 		}
 	}
+}
+
+void CScene::LoadTile(const wstring& _strRelativePath)
+{
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
+
+	strFilePath += _strRelativePath;
+	FILE* pFile = nullptr;
+
+	//읽기 모드는, 파일이 존재하지 않으면 에러 발생하도록 설계
+	_wfopen_s(&pFile, strFilePath.c_str(), L"rb");
+	assert(pFile);
+
+	//파일 내에 담긴 타일갯수 정보를 불러오고, 타일 맵 생성
+	UINT xCount = 0;
+	UINT yCount = 0;
+
+	fread(&xCount, sizeof(UINT), 1, pFile);
+	fread(&yCount, sizeof(UINT), 1, pFile);
+
+	CreateTile(xCount, yCount);
+
+	const vector<CObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
+
+	//타일 하나하나마다 자신이 어떤 텍스쳐가 있고, 서로 다른 기능을 하기에 각자가 자신을 저장
+	for (size_t i = 0; i < vecTile.size(); ++i)
+	{
+		((CTile*)vecTile[i])->Load(pFile);
+	}
+
+	fclose(pFile);
 }

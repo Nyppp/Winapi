@@ -11,8 +11,11 @@
 #include "CPanelUI.h"
 #include "CBtnUI.h"
 #include "CUIMgr.h"
+#include "CPathMgr.h"
 
-CScene_Tool::CScene_Tool()
+void ChangeScene(DWORD_PTR, DWORD_PTR);
+
+CScene_Tool::CScene_Tool() : m_pUI(nullptr)
 {
 }
 
@@ -30,7 +33,12 @@ void CScene_Tool::update()
 	//특정 키가 눌렸을 때 UI 우선순위를 변경할 수 있음
 	if (KEY_TAP(KEY::LSHIFT))
 	{
-		CUIMgr::GetInst()->SetFocusedUI(m_pUI);
+		SaveTile(L"tile\\Test.tile");
+	}
+
+	if (KEY_TAP(KEY::CTRL))
+	{
+		LoadTile(L"tile\\Test.tile");
 	}
 }
 
@@ -48,24 +56,29 @@ void CScene_Tool::Enter()
 
 	//자식 UI의 배치 -> 직접 자식UI를 씬에 배치하고 렌더링하는게 아니라,
 	//부모 UI가 해당 정보를 가지고 있으며, 렌더링과 배치를 부모UI 클래스에서 함께 동작한다.
-	CUI* pBtnUI = new CBtnUI;
+	CBtnUI* pBtnUI = new CBtnUI;
 	pBtnUI->SetName(L"ChildUI");
 	pBtnUI->SetScale(Vec2(100.f, 100.f));
-
+	
 	//자식 UI의 포지션은 부모UI와의 상대위치를 넣게 됨
 	pBtnUI->SetPos(Vec2(0.f, 0.f));
+	pBtnUI->SetClickedCallBack(ChangeScene, 0, 0);
 
 	pPanelUI->AddChild(pBtnUI);
 
 	//씬에서는 부모 UI만 알고 있지만, 부모UI가 포함하고 있는 자식UI의 렌더링, 업데이트는 부모UI를 통해 동작함.
 	AddObject(pPanelUI, GROUP_TYPE::UI);
 
-	//클론으로 생성해서 같은  모양에, 같은 자식구조를 가졌지만 위의 pPanelUI와는 전혀 다른 객체임
-	CUI* pClonePanel = pPanelUI->Clone();
-	pClonePanel->SetPos(pClonePanel->GetPos() + Vec2(-300.f, 0.f));
-	AddObject(pClonePanel, GROUP_TYPE::UI);
+	////클론으로 생성해서 같은  모양에, 같은 자식구조를 가졌지만 위의 pPanelUI와는 전혀 다른 객체임
+	//CUI* pClonePanel = pPanelUI->Clone();
+	//pClonePanel->SetPos(pClonePanel->GetPos() + Vec2(-300.f, 0.f));
 
-	m_pUI = pClonePanel;
+	////버튼의 함수 포인터를 지정 -> 복사본에 대한 자식 함수호출은 이렇게 사용
+	//((CBtnUI*)(pClonePanel->GetChildUI()[0]))->SetClickedCallBack(ChangeScene, 0, 0);
+
+	//AddObject(pClonePanel, GROUP_TYPE::UI);
+
+	//m_pUI = pPanelUI;
 
 	//기본 카메라 세팅 -> 전체 해상도의 정 중앙 위치
 	CCamera::GetInst()->SetLookAt(vResolution / 2.f);
@@ -111,8 +124,58 @@ void CScene_Tool::SetTileIdx()
 		{
 			return;
 		}
+
 		((CTile*)vecTile[iIdx])->AddImgIdx();
 	}
+}
+
+//상대경로 이름을 받아오고, 그에 맞춰서 타일 정보를 담은 파일 생성
+void CScene_Tool::SaveTile(const wstring& _strRelativePath)
+{
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
+
+	strFilePath += _strRelativePath;
+	//2바이트 경로에 대한 파일 오픈
+	//FILE 자료형 -> 보이드 포인터, 커널 오브젝트로 os의 파일 시스템과 코드를 연결해주는 자료형임
+	FILE* pFile = nullptr;
+
+	// ***2중 포인터***
+	//포인터의 포인터로, 포인터가 가리키는 값에 대한 정보를 담고 있음
+	//2중포인터 변수에는 값을 집어넣을 수 없으며, 무조건 포인터가 들어감
+	//2중포인터의 수정 = 포인터의 참조 주소를 수정
+
+	//n차 포인터를 수정하려면 -> n+1차 포인터를 매개변수로 받아와서, n차 포인터의 주소를 수정 -> 보통 이중포인터에서 끝남
+
+	//코드와 파일 주소에 대한 연결(os가 관리)을 fopen으로 연다, 파일 저장이기에 write 모드로 진입
+	_wfopen_s(&pFile, strFilePath.c_str(), L"wb");
+
+	assert(pFile);
+
+	//타일 데이터 저장
+	UINT xCount = GetTileX();
+	UINT yCount = GetTileY();
+
+	fwrite(&xCount, sizeof(UINT), 1, pFile);
+	fwrite(&yCount, sizeof(UINT), 1, pFile);
+
+	const vector<CObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
+
+	//타일 하나하나마다 자신이 어떤 텍스쳐가 있고, 서로 다른 기능을 하기에 각자가 자신을 저장
+	for (size_t i = 0; i < vecTile.size(); ++i)
+	{
+		((CTile*)vecTile[i])->Save(pFile);
+	}
+
+	
+	//작업이 끝나면, fclose로 닫아줘야 함(커널 오브젝트이기에 직접 delete는 안함)
+	fclose(pFile);
+}
+
+//버튼에 씬 체인지 함수를 넣기 위해 만든 ChangeScene함수
+void ChangeScene(DWORD_PTR, DWORD_PTR)
+{
+	//내부동작은, 씬을 변경하는 이벤트를 호출한다
+	ChangeScene(SCENE_TYPE::START);
 }
 
 

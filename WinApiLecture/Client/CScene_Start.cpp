@@ -29,7 +29,7 @@ void CScene_Start::Enter()
 	//AddObject(pOtherPlayer, GROUP_TYPE::PLAYER);
 
 	//몬스터 오브젝트 추가
-	int iMonCount = 15;
+	int iMonCount = 3;
 
 	float fMoveDist = 25.f;
 	float fObjScale = 50.f;
@@ -64,6 +64,9 @@ void CScene_Start::Enter()
 		pMonsterObj->SetScale(Vec2(fObjScale, fObjScale));
 		AddObject(pMonsterObj, GROUP_TYPE::MONSTER);
 	}
+	
+	//타일 로딩
+	//LoadTile(L"Tile\\Start.tile");
 
 	//충돌 지정
 	//플레이어 그룹과 몬스터 그룹 간 충돌체크

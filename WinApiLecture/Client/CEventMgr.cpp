@@ -3,6 +3,7 @@
 #include "CObject.h"
 #include "CSceneMgr.h"
 #include "CScene.h"
+#include "CUIMgr.h"
 
 CEventMgr::CEventMgr() : m_vecEvent{}, m_vecDeadObj{}
 {
@@ -67,6 +68,8 @@ void CEventMgr::Excute(const tEvent& _Event)
 	{
 		// lparam : 다음 씬 타입 값
 		CSceneMgr::GetInst()->ChangeScene((SCENE_TYPE)_Event.lParam);
+		// 씬 변경 -> 포커스 된 UI를 해제시킨다.
+		CUIMgr::GetInst()->SetFocusedUI(nullptr);
 	}
 
 		break;

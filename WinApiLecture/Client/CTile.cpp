@@ -4,7 +4,7 @@
 #include "CTexture.h"
 
 
-CTile::CTile() : m_pTileTex(nullptr), m_iImgIdx(0)
+CTile::CTile() : m_pTileTex(nullptr), m_iImgIdx(0), m_iMaximgIdx(0)
 {
 	//타일은 모두 64x64픽셀로 고정
 	SetScale(Vec2(TILE_SIZE, TILE_SIZE));
@@ -30,15 +30,11 @@ void CTile::render(HDC _dc)
 	UINT iMaxCol = iWidth / TILE_SIZE;
 	UINT iMaxRow = iHeight / TILE_SIZE;
 
+	//행, 열 크기를 바탕으로 텍스쳐가 몇 칸인지 계산해둔다.
+	m_iMaximgIdx = iMaxCol * iMaxRow;
 
-	UINT iCurRow = (UINT)m_iImgIdx / iMaxRow;
+	UINT iCurRow = (UINT)m_iImgIdx / iMaxCol;
 	UINT iCurCol = (UINT)m_iImgIdx % iMaxCol;
-
-	//행은 나머지 연산이기에, 범위를 초과할 일이 없지만 열은 초과할 가능성이 있음 -> 예외처리
-	if (iCurRow >= iMaxRow)
-	{
-		assert(nullptr);
-	}
 
 	Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(GetPos());
 	Vec2 vScale = GetScale();
@@ -51,6 +47,17 @@ void CTile::render(HDC _dc)
 		SRCCOPY);
 }
 
+void CTile::Save(FILE* _pFile)
+{
+	fwrite(&m_iImgIdx, sizeof(int), 1, _pFile);
+}
+
+void CTile::Load(FILE* _pFile)
+{
+	fread(&m_iImgIdx, sizeof(int), 1, _pFile);
+}
+
 void CTile::update()
 {
 }
+
