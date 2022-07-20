@@ -33,12 +33,12 @@ void CScene_Tool::update()
 	//특정 키가 눌렸을 때 UI 우선순위를 변경할 수 있음
 	if (KEY_TAP(KEY::LSHIFT))
 	{
-		SaveTile(L"tile\\Test.tile");
+		SaveTileData();
 	}
 
 	if (KEY_TAP(KEY::CTRL))
 	{
-		LoadTile(L"tile\\Test.tile");
+		LoadTileData();
 	}
 }
 
@@ -165,10 +165,66 @@ void CScene_Tool::SaveTile(const wstring& _strRelativePath)
 	{
 		((CTile*)vecTile[i])->Save(pFile);
 	}
-
 	
 	//작업이 끝나면, fclose로 닫아줘야 함(커널 오브젝트이기에 직접 delete는 안함)
 	fclose(pFile);
+}
+
+//맵 데이터 파일 저장 함수
+void CScene_Tool::SaveTileData()
+{
+	//파일 저장 창을 띄우기 위해 설정되는 구조체(실제 다른 프로그램에서 파일 저장할때 나오는 윈도우)
+	OPENFILENAME ofn = {};
+
+	wchar_t szName[256] = {};
+
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+	ofn.lpstrFile = szName;
+	ofn.nMaxFile = sizeof(szName);
+	ofn.lpstrFilter = L"ALL\0*.*\0Tile\0*.tile\0";
+	ofn.nFilterIndex = 0;
+	ofn.lpstrFileTitle = nullptr;
+	ofn.nMaxFileTitle = 0;
+
+	wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
+	strTileFolder += L"tile";
+	ofn.lpstrInitialDir = strTileFolder.c_str();
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+	
+	if (GetSaveFileName(&ofn))
+	{
+		wstring strRelativePath = CPathMgr::GetInst()->GetRelativePath(szName);
+		SaveTile(strRelativePath);
+	}
+}
+
+//맵 데이터 파일 로드 함수
+void CScene_Tool::LoadTileData()
+{
+	OPENFILENAME ofn = {};
+
+	wchar_t szName[256] = {};
+
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+	ofn.lpstrFile = szName;
+	ofn.nMaxFile = sizeof(szName);
+	ofn.lpstrFilter = L"ALL\0*.*\0Tile\0*.tile\0";
+	ofn.nFilterIndex = 0;
+	ofn.lpstrFileTitle = nullptr;
+	ofn.nMaxFileTitle = 0;
+
+	wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
+	strTileFolder += L"tile";
+	ofn.lpstrInitialDir = strTileFolder.c_str();
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+	if (GetOpenFileName(&ofn))
+	{
+		wstring strRelativePath = CPathMgr::GetInst()->GetRelativePath(szName);
+		LoadTile(strRelativePath);
+	}
 }
 
 //버튼에 씬 체인지 함수를 넣기 위해 만든 ChangeScene함수
@@ -177,8 +233,6 @@ void ChangeScene(DWORD_PTR, DWORD_PTR)
 	//내부동작은, 씬을 변경하는 이벤트를 호출한다
 	ChangeScene(SCENE_TYPE::START);
 }
-
-
 
 //툴 씬에서만 사용되는 타일 갯수 조정에 대한 프로시저 함수
 //멤버함수가 아니고, 전역함수이며, 사용처를 분류하기 위해 툴 씬 cpp에서 구현

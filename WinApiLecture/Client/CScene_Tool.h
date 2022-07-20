@@ -19,6 +19,9 @@ public:
     //툴에서 작업하던 타일 정보를 저장
     void SaveTile(const wstring& _strRelativePath);
 
+    void SaveTileData();
+    void LoadTileData();
+
 public:
     CScene_Tool();
     ~CScene_Tool();
