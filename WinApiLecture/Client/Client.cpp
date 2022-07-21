@@ -34,10 +34,11 @@ int APIENTRY wWinMain(
 {
 
     //메모리 누수 체크 -> 어느 메모리 블럭이 누수되는지 알려줌
-    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    //_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
     //그렇게 얻은 블록 번호를 집어넣으면, 어떤 코드가 메모리 누수를 유발하는지 중단점으로 보여줌
-    //_CrtSetBreakAlloc(213);
+    //_CrtSetBreakAlloc(368);
+    
 
     //매크로함수, 아무런 기능이 없음 -> 컴파일러가 자동으로 무시함
     //기능은 없지만, 참조되지 않는 변수들이라는 표시를 위해 만든 매크로 함수임. -> 주석과 유사한 용도

@@ -31,10 +31,10 @@ void CScene_Tool::update()
 
 	//ui매니저에서 구현한 ui 포커스 설정 함수를 사용해서,
 	//특정 키가 눌렸을 때 UI 우선순위를 변경할 수 있음
-	if (KEY_TAP(KEY::LSHIFT))
+	/*if (KEY_TAP(KEY::LSHIFT))
 	{
 		SaveTileData();
-	}
+	}*/
 
 	if (KEY_TAP(KEY::CTRL))
 	{
@@ -51,7 +51,7 @@ void CScene_Tool::Enter()
 	//ui 생성
 	CUI* pPanelUI = new CPanelUI;
 	pPanelUI->SetName(L"ParentUI");
-	pPanelUI->SetScale(Vec2(200.f, 300.f));
+	pPanelUI->SetScale(Vec2(300.f, 780.f));
 	pPanelUI->SetPos(Vec2(vResolution.x - pPanelUI->GetScale().x, 0.f));
 
 	//자식 UI의 배치 -> 직접 자식UI를 씬에 배치하고 렌더링하는게 아니라,
@@ -59,10 +59,13 @@ void CScene_Tool::Enter()
 	CBtnUI* pBtnUI = new CBtnUI;
 	pBtnUI->SetName(L"ChildUI");
 	pBtnUI->SetScale(Vec2(100.f, 100.f));
+
 	
 	//자식 UI의 포지션은 부모UI와의 상대위치를 넣게 됨
 	pBtnUI->SetPos(Vec2(0.f, 0.f));
-	pBtnUI->SetClickedCallBack(ChangeScene, 0, 0);
+
+	//선언은 부모 클래스의 함수를 받아온다고 했지만, 자식 클래스의 함수를 타입캐스팅 하여 전달하면 문제발생X
+	((CBtnUI*)pBtnUI)->SetClickedCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::SaveTileData);
 
 	pPanelUI->AddChild(pBtnUI);
 
@@ -227,7 +230,7 @@ void CScene_Tool::LoadTileData()
 	}
 }
 
-//버튼에 씬 체인지 함수를 넣기 위해 만든 ChangeScene함수
+//버튼에 씬 체인지 함수를 넣기 위해 만든 ChangeScene함수 -> 멤버함수 아님, 전역함수임
 void ChangeScene(DWORD_PTR, DWORD_PTR)
 {
 	//내부동작은, 씬을 변경하는 이벤트를 호출한다
