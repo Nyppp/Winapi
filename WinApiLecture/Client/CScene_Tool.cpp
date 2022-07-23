@@ -36,10 +36,10 @@ void CScene_Tool::update()
 		SaveTileData();
 	}*/
 
-	if (KEY_TAP(KEY::CTRL))
+	/*if (KEY_TAP(KEY::CTRL))
 	{
 		LoadTileData();
-	}
+	}*/
 }
 
 void CScene_Tool::Enter()
@@ -56,18 +56,27 @@ void CScene_Tool::Enter()
 
 	//자식 UI의 배치 -> 직접 자식UI를 씬에 배치하고 렌더링하는게 아니라,
 	//부모 UI가 해당 정보를 가지고 있으며, 렌더링과 배치를 부모UI 클래스에서 함께 동작한다.
-	CBtnUI* pBtnUI = new CBtnUI;
-	pBtnUI->SetName(L"ChildUI");
-	pBtnUI->SetScale(Vec2(100.f, 100.f));
+	CBtnUI* pSaveBtnUI = new CBtnUI;
+	pSaveBtnUI->SetName(L"ChildSaveUI");
+	pSaveBtnUI->SetBtnText(L"Save Tile");
+	pSaveBtnUI->SetScale(Vec2(100.f, 100.f));
+
+	CBtnUI* pLoadBtnUI = new CBtnUI;
+	pLoadBtnUI->SetName(L"ChildLoadUI");
+	pLoadBtnUI->SetBtnText(L"Load Tile");
+	pLoadBtnUI->SetScale(Vec2(100.f, 100.f));
 
 	
 	//자식 UI의 포지션은 부모UI와의 상대위치를 넣게 됨
-	pBtnUI->SetPos(Vec2(0.f, 0.f));
+	pSaveBtnUI->SetPos(Vec2(0.f, 0.f));
+	pLoadBtnUI->SetPos(Vec2(120.f, 0.f));
 
 	//선언은 부모 클래스의 함수를 받아온다고 했지만, 자식 클래스의 함수를 타입캐스팅 하여 전달하면 문제발생X
-	((CBtnUI*)pBtnUI)->SetClickedCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::SaveTileData);
+	((CBtnUI*)pSaveBtnUI)->SetClickedCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::SaveTileData);
+	((CBtnUI*)pLoadBtnUI)->SetClickedCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::LoadTileData);
 
-	pPanelUI->AddChild(pBtnUI);
+	pPanelUI->AddChild(pSaveBtnUI);
+	pPanelUI->AddChild(pLoadBtnUI);
 
 	//씬에서는 부모 UI만 알고 있지만, 부모UI가 포함하고 있는 자식UI의 렌더링, 업데이트는 부모UI를 통해 동작함.
 	AddObject(pPanelUI, GROUP_TYPE::UI);
@@ -85,7 +94,6 @@ void CScene_Tool::Enter()
 
 	//기본 카메라 세팅 -> 전체 해상도의 정 중앙 위치
 	CCamera::GetInst()->SetLookAt(vResolution / 2.f);
-
 }
 
 void CScene_Tool::Exit()

@@ -35,11 +35,18 @@ private:
     //오브젝트에 존재하는 함수를 호출할 객체
     CObject* m_ObjectInst;
 
+    wstring m_strBtnText;
+
 public:
     virtual void MouseOn(); //UI위에 마우스가 올라감
     virtual void MouseLbtnDown(); //UI위에서 마우스 왼쪽버튼이 눌려있음
     virtual void MouseLbtnUp(); //왼클릭 끝날 때
     virtual void MouseLbtnCliked();
+
+    void SetBtnText(const wstring& _str)
+    {
+        m_strBtnText = _str;
+    }
 
     //버튼 클릭 시, 함수 콜백 - 전역함수 호출 시 동작
     void SetClickedCallBack(BTN_FUNC _pFunc, DWORD_PTR _param1 , DWORD_PTR _param2)
@@ -57,6 +64,9 @@ public:
     void SetClickedCallBack(CObject* _pObject, OBJECT_MEMFUNC _pObjectFunc);
     
     CLONE(CBtnUI);
+
+public:
+    virtual void render(HDC _dc);
 
 public:
     CBtnUI();
