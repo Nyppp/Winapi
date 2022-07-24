@@ -63,6 +63,7 @@
 
 //싱글톤 객체 동적할당은 사용자가 원할 때 해제해야 하는 객체에 주로 사용
 
+class CTexture;
 
 class CCore
 {
@@ -79,8 +80,7 @@ private:
 	POINT	m_ptResolution; //윈도우 해상도
 	HDC		m_hDC;			//메인 윈도우에 draw 할 DC;
 
-	HBITMAP m_hBit; //비트맵
-	HDC m_memDC; //이중버퍼링을 위해 따로 화면이 그려질 DC
+	CTexture* m_pMemTex; //백 버퍼링을 위한 텍스쳐
 
 	//자주 사용하는 GDI 오브젝트
 	HBRUSH m_arrBrush[(UINT)BRUSH_TYPE::END];

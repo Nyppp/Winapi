@@ -13,6 +13,39 @@
 #include "CAnimator.h"
 #include "CAnimation.h"
 
+CPlayer::CPlayer()
+{
+	CreateCollider();
+
+	//오프셋을 주면, 오프셋 만큼 콜라이더 중심 좌표가 변경됨
+	GetCollider()->SetOffsetPos(Vec2(0.f, 5.f));
+	GetCollider()->SetScale(Vec2(20.f, 50.f));
+
+	//텍스쳐 로딩
+	CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\Animation\\Link.bmp");
+
+	CreateAnimator();
+	//텍스쳐 정보를 애니메이션이 모두 알고있기에, 플레이어 클래스는 더이상 텍스쳐를 멤버로 가질 필요가 없음
+	GetAnimator()->CreateAnimation(L"WALK_DOWN", pTex, Vec2(0.f, 260.f), Vec2(60.f, 65.f), Vec2(60.f, 0.f), 0.1f, 10);
+
+	//두번째 인자로, 애니메이션 반복 여부를 입력받음 -> 상용엔진의 animation repeat 기능
+	GetAnimator()->Play(L"WALK_DOWN", true);
+
+	CAnimation* pAnim = GetAnimator()->FindAnimation(L"WALK_DOWN");
+
+	//애니메이션 오프셋 -> 원 오브젝트와 다른 위치에 애니메이션을 렌더링 할 수 있음
+	for (int i = 0; i < pAnim->GetMaxFrame(); ++i)
+	{
+		pAnim->GetFrame(i).vOffset = Vec2(0.f, -20.f);
+	}
+}
+
+CPlayer::~CPlayer()
+{
+
+}
+
+
 void CPlayer::update()
 {
 	Vec2 vPos = GetPos();
@@ -46,14 +79,40 @@ void CPlayer::update()
 
 	SetPos(vPos);
 
-	GetAnimator()->update();
+	//GetAnimator()->update();
 }
 
 void CPlayer::render(HDC _dc)
 {
 	//컴포넌트(충돌체와 같은 추가적으로 오브젝트에 붙는 요소들) 렌더링
 	//+ 애니메이션 렌더링
-	component_render(_dc);
+	//component_render(_dc);
+
+	//알파 블렌딩 실습
+	CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"Player", L"texture\\Player_A.bmp");
+
+	Vec2 vPos = GetPos();
+	vPos = CCamera::GetInst()->GetRenderPos(vPos);
+
+	float Width = (float)pTex->Width();
+	float Height = (float)pTex->Height();
+
+	//블렌딩 함수
+	BLENDFUNCTION bf = {};
+	
+	bf.BlendOp = AC_SRC_OVER;
+	bf.BlendFlags = 0;
+	bf.AlphaFormat = AC_SRC_ALPHA;
+	bf.SourceConstantAlpha = 127;
+
+	//32비트 비트맵 리소스에 대해서, 알파값을 참고하여 리소스를 그린다.
+	AlphaBlend(_dc, 
+		vPos.x - Width / 2.f,
+		vPos.y - Height /2.f,
+		Width, Height,
+		pTex->GetDC(),
+		0, 0, Width, Height,
+		bf);
 }
 
 //미사일 생성 함수
@@ -81,33 +140,3 @@ void CPlayer::CreateMissile()
 	CreateObject(pMissile, GROUP_TYPE::PROJ_PLAYER);
 }
 
-CPlayer::CPlayer()
-{
-	CreateCollider();
-	
-	//오프셋을 주면, 오프셋 만큼 콜라이더 중심 좌표가 변경됨
-	GetCollider()->SetOffsetPos(Vec2(0.f, 5.f));
-	GetCollider()->SetScale(Vec2(20.f, 50.f));
-
-	//텍스쳐 로딩
-	CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\link0.bmp");
-	CreateAnimator();
-	//텍스쳐 정보를 애니메이션이 모두 알고있기에, 플레이어 클래스는 더이상 텍스쳐를 멤버로 가질 필요가 없음
-	GetAnimator()->CreateAnimation(L"WALK_DOWN", pTex, Vec2(0.f,260.f), Vec2(60.f, 65.f), Vec2(60.f, 0.f), 0.1f, 10);
-
-	//두번째 인자로, 애니메이션 반복 여부를 입력받음 -> 상용엔진의 animation repeat 기능
-	GetAnimator()->Play(L"WALK_DOWN", true);
-
-	CAnimation* pAnim = GetAnimator()->FindAnimation(L"WALK_DOWN");
-
-	//애니메이션 오프셋 -> 원 오브젝트와 다른 위치에 애니메이션을 렌더링 할 수 있음
-	for (int i = 0; i < pAnim->GetMaxFrame(); ++i)
-	{
-		pAnim->GetFrame(i).vOffset = Vec2(0.f, -20.f);
-	}
-}
-
-CPlayer::~CPlayer()
-{
-
-}

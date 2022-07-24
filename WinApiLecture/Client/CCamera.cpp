@@ -5,7 +5,6 @@
 #include "CKeyMgr.h"
 #include "CTimeMgr.h"
 
-
 CCamera::CCamera()
 	: m_pTargetObj(nullptr), m_fTime(1.f), m_fSpeed(0.f), m_fAccTime(1.f)
 {

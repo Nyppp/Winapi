@@ -2,6 +2,13 @@
 
 class CObject;
 
+enum class CAM_EFFECT
+{
+	FADE_IN,
+	FAGE_OUT,
+};
+
+
 class CCamera
 {
 	SINGLE(CCamera);
@@ -31,6 +38,8 @@ private:
 
 	//누적 시간
 	float m_fAccTime;
+
+	CAM_EFFECT m_eEffect; //카메라 효과
 
 public:
 	void SetLookAt(Vec2 _vLook) 

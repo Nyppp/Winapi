@@ -11,6 +11,7 @@ private:
 public:
     //텍스쳐에 비트맵을 불러오는 함수
     void Load(const wstring& _strFilePath);
+    void Create(UINT _iWidth, UINT _iHeight);
 
     //텍스쳐의 가로, 세로 길이 반환 함수
     UINT Width() { return m_bitInfo.bmWidth; }

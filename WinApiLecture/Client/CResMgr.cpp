@@ -52,3 +52,26 @@ CTexture* CResMgr::FindTexture(const wstring& _strKey)
 
 	return (CTexture*)iter->second;
 }
+
+//텍스쳐를 만드는 함수
+CTexture* CResMgr::CreateTexture(const wstring& _strKey, UINT _iWidth, UINT _iHeight)
+{
+	//만약 텍스쳐의 키값이 이미 있는 값이라면, 있는거를 반환해준다.
+	CTexture* pTex = FindTexture(_strKey);
+	if (pTex != nullptr)
+	{
+		return pTex;
+	}
+
+	pTex = new CTexture;
+
+	pTex->Create(_iWidth, _iHeight);
+
+	pTex->SetKey(_strKey);
+
+	//키값과 상대경로를 맵 멤버에 저장
+	m_mapTex.insert(make_pair(_strKey, pTex));
+
+	//불러온 텍스쳐를 반환
+	return pTex;
+}

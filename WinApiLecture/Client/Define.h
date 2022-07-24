@@ -47,8 +47,8 @@ enum class GROUP_TYPE
 {
 	DEFAULT,
 	TILE,
-	PLAYER,
 	MONSTER,
+	PLAYER,
 	PROJ_PLAYER,	//플레이어가 쏜 투사체
 	PROJ_MONSTER,	//몬스터가 쏜 투사체
 

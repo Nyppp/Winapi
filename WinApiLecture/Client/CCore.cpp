@@ -9,6 +9,8 @@
 #include "CEventMgr.h"
 #include "CCamera.h"
 #include "CUIMgr.h"
+#include "CTexture.h"
+#include "CResMgr.h"
 
 //CCore* CCore::g_pInst = nullptr;
 //CObject g_obj;
@@ -40,15 +42,10 @@ int CCore::Init(HWND _hwnd, POINT _ptResolution)
 	//이중 버퍼링 용도의 비트맵과 dc 생성
 	//윈도우 화면의 픽셀 집합 -> 비트맵 으로 관리
 	//윈도우와 똑같은 비트맵을 만듦, CompatibleBitmap은 현재 윈도우와 호환되는 윈도우라는 의미
-	m_hBit = CreateCompatibleBitmap(m_hDC, m_ptResolution.x, m_ptResolution.y);
-	m_memDC = CreateCompatibleDC(m_hDC);
 
-	//DC는 만들어질 때 기본적으로 1픽셀짜리 목적지가 포함되어있음(더미 데이터)
-	//SelectObject는 펜, 브러쉬를 바꾸는 것 뿐 아니라 그림을 그리는 목적지도 변경가능
-	HBITMAP hOldBit = (HBITMAP)SelectObject(m_memDC, m_hBit);
+	//기존 코어에서 직접 dc와 비트맵을 생성하던 동작을 리소스 매니저가 하도록 변경
+	m_pMemTex = CResMgr::GetInst()->CreateTexture(L"BackBuffer",(UINT)m_ptResolution.x, (UINT)m_ptResolution.y);
 
-	//현재 memDC는 1픽셀짜리 더미 데이터가 그림공간으로 있기에 바로 지워버림
-	DeleteObject(hOldBit);
 
 	//자주 사용하는 펜, 브러쉬 초기화
 	CreateBrushPen();
@@ -108,12 +105,12 @@ void CCore::progress()
 	//렌더링 -> 더블 버퍼링 사용해서 잔상 제거
 	//이전 프레임에 그려진 장면을 모두 지움
 	//화면 전체를 지우는 목적이기 때문에 -1부터 최대값 +1까지 지우기
-	Rectangle(m_memDC, -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1);
-	CSceneMgr::GetInst()->render(m_memDC); //렌더링은 씬 매니저를 통해 그려냄
+	Rectangle(m_pMemTex->GetDC(), -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1);
+	CSceneMgr::GetInst()->render(m_pMemTex->GetDC()); //렌더링은 씬 매니저를 통해 그려냄
 
 	//한 DC에 담긴 비트맵을 다른 DC에 옮겨주는 BitBlt 함수
 	BitBlt(m_hDC, 0, 0, m_ptResolution.x, m_ptResolution.y,
-		m_memDC, 0, 0, SRCCOPY);
+		m_pMemTex->GetDC(), 0, 0, SRCCOPY);
 
 	CTimeMgr::GetInst()->render();
 	//렌더링 완료
@@ -138,9 +135,8 @@ void CCore::CreateBrushPen()
 CCore::CCore() 
 	: m_hwnd(0), 
 	m_ptResolution{}, 
-	m_hDC(0), 
-	m_hBit(0),
-	m_memDC(0),
+	m_hDC(0),
+	m_pMemTex(nullptr),
 	m_arrBrush{},
 	m_arrPen{}
 {
@@ -151,10 +147,6 @@ CCore::~CCore()
 {
 	//init할 때 가져온 Device context를 해제함
 	ReleaseDC(m_hwnd, m_hDC);
-
-	//메인 윈도우와 연결되지 않은 DC는 비트맵과 각각 지워줘야 함
-	DeleteDC(m_memDC);
-	DeleteObject(m_hBit);
 
 	for (int i = 0; i < (UINT)PEN_TYPE::END; ++i)
 	{
