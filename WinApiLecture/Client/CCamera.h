@@ -1,11 +1,20 @@
 #pragma once
 
 class CObject;
+class CTexture;
 
 enum class CAM_EFFECT
 {
 	FADE_IN,
-	FAGE_OUT,
+	FADE_OUT,
+	NONE,
+};
+
+struct tCamEffect
+{
+	CAM_EFFECT eEffect; //카메라 효과
+	float fDuration; //효과 전체 진행 시간
+	float fCurTime; //현재 시간
 };
 
 
@@ -39,7 +48,8 @@ private:
 	//누적 시간
 	float m_fAccTime;
 
-	CAM_EFFECT m_eEffect; //카메라 효과
+	list<tCamEffect> m_listCamEffect; //카메라 효과 정보를 담아두는 리스트
+	CTexture* m_pVeilTex; //가림막 텍스쳐 -> 페이드인, 페이드아웃 효과를 위해 선언
 
 public:
 	void SetLookAt(Vec2 _vLook) 
@@ -64,8 +74,40 @@ public:
 	//실제 좌표 반환 = 렌더링 좌표에서 카메라 보간 값을 더해준다
 	Vec2 GetRealPos(Vec2 _vRenderPos) { return _vRenderPos + m_vDiff; }
 
+	//페이드인, 페이드아웃 설정 함수
+	void FadeIn(float _fDuration)
+	{
+		tCamEffect ef = {};
+		ef.eEffect = CAM_EFFECT::FADE_IN;
+		ef.fDuration = _fDuration;
+		ef.fCurTime = 0.f;
+
+		if (_fDuration == 0.f)
+		{
+			assert(nullptr);
+		}
+
+		m_listCamEffect.push_back(ef);
+	}
+
+	void FadeOut(float _fDuration)
+	{
+		tCamEffect ef = {};
+		ef.eEffect = CAM_EFFECT::FADE_OUT;
+		ef.fDuration = _fDuration;
+		ef.fCurTime = 0.f;
+
+		if (_fDuration == 0.f)
+		{
+			assert(nullptr);
+		}
+		m_listCamEffect.push_back(ef);
+	}
+
 public:
+	void init();
 	void update();
+	void render(HDC _dc);
 
 private:
 	void CalDiff();

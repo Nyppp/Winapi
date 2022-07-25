@@ -57,7 +57,7 @@ void CAnimator::finalupdate()
 }
 
 //텍스쳐 이름, 텍스쳐, 좌상단 위치, 애니메이션 텍스쳐 크기, 다음 프레임으로 넘어가기 위해 좌상단 이동거리, 프레임 갯수
-void CAnimator::CreateAnimation(const wstring& _strName, CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep, float _fDuration, UINT _iFrameCount)
+void CAnimator::CreateAnimation(const wstring& _strName, CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep, float _fDuration, UINT _iFrameCount , Vec2 _vOffset)
 {
 	//애니메이션 이름이 이미 존재한다면, assert 발생 -> 예외처리
 	CAnimation* pAnim  = FindAnimation(_strName);
@@ -68,9 +68,10 @@ void CAnimator::CreateAnimation(const wstring& _strName, CTexture* _pTex, Vec2 _
 	//애니메이션의 이름 설정
 	pAnim->SetName(_strName);
 	pAnim->m_pAnimator = this;
+	
 
 	//받아온 텍스쳐와 좌표 정보를 사용해 애니메이션 클래스로 넘어가서 애니메이션 생성
-	pAnim->Create(_pTex, _vLT, _vSliceSize, _vStep, _fDuration, _iFrameCount);
+	pAnim->Create(_pTex, _vLT, _vSliceSize, _vStep, _fDuration, _iFrameCount, _vOffset);
 
 	//애니메이션이 생성된 이후, 애니메이션 map에 정보 저장
 	m_mapAnim.insert(make_pair(_strName, pAnim));

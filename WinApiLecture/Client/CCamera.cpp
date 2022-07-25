@@ -4,11 +4,14 @@
 #include "CCore.h"
 #include "CKeyMgr.h"
 #include "CTimeMgr.h"
+#include "CResMgr.h"
+#include "CTexture.h"
 
 CCamera::CCamera()
-	: m_pTargetObj(nullptr), m_fTime(1.f), m_fSpeed(0.f), m_fAccTime(1.f)
+	: m_pTargetObj(nullptr), m_fTime(1.f), m_fSpeed(0.f), m_fAccTime(1.f),
+	m_pVeilTex(nullptr), m_listCamEffect{}
 {
-
+	
 }
 
 CCamera::~CCamera()
@@ -16,6 +19,14 @@ CCamera::~CCamera()
 
 }
 
+void CCamera::init()
+{
+	//텍스쳐 생성에는 해상도가 필요하기에, 싱글톤 생성자에 해상도 값을 받아오는 게 아니라,
+	//임의로 지정한 초기화 함수를 통해 명시적인 시점에서 코어 객체가 생성된 이후 가져온다
+	Vec2 vResolution = CCore::GetInst()->GetResolution();
+	m_pVeilTex = CResMgr::GetInst()->CreateTexture(L"VeilTexture", (UINT)vResolution.x, (UINT)vResolution.y);
+
+}
 
 //오브젝트를 계속 따라다니게 함
 void CCamera::update()
@@ -52,6 +63,68 @@ void CCamera::update()
 
 	//화면 중앙좌표와 카메라 LookAt좌표의 차이 값 계산
 	CalDiff();
+}
+
+void CCamera::render(HDC _dc)
+{
+	//아무런 카메라 효과가 없다면 검은 화면을 렌더링하지 않는다.
+	if ( m_listCamEffect.empty() )
+	{
+		return;
+	}
+	
+	float fRatio = 0.f;
+
+	tCamEffect& effect = m_listCamEffect.front();
+	effect.fCurTime += fDT;
+
+	//전체 시간을 통해 0 ~ 255에 대한 비율을 계산하고 현재 시간에 대해 알파값 도출
+	fRatio = effect.fCurTime / effect.fDuration;
+
+	if (fRatio < 0.f)
+	{
+		fRatio = 0.f;
+	}
+	if (fRatio > 1.f)
+	{
+		fRatio = 1.f;
+	}
+
+	//페이드 효과에 적용할 알파값
+	int iAlpha = 0;
+
+	//페이드 아웃 -> 알파값 0에서 시간이 지날수록 255 -> 검은 텍스쳐가 서서히 나타나는 효과
+	if (effect.eEffect == CAM_EFFECT::FADE_OUT)
+	{
+		//0부터 255로 알파값이 증가하는 페이드 아웃
+		iAlpha = (int)(255.f * fRatio);
+	}
+	else if (effect.eEffect == CAM_EFFECT::FADE_IN)
+	{
+		//255부터 0으로 알파값이 감소하는 페이드 인
+		iAlpha = (int)(255.f * (1.f - fRatio));
+	}
+
+	BLENDFUNCTION bf = {};
+
+	bf.BlendOp = AC_SRC_OVER;
+	bf.BlendFlags = 0;
+	bf.AlphaFormat = 0;
+	//해당 텍스쳐는 알파값이 없기에, 소스값이 없다고 설정하고 자체적으로 알파값을 준다.
+	bf.SourceConstantAlpha = iAlpha;
+
+	//32비트 비트맵 리소스에 대해서, 알파값을 참고하여 리소스를 그린다.
+	AlphaBlend(_dc, 0, 0,
+		(int)m_pVeilTex->Width(), (int)m_pVeilTex->Height(),
+		m_pVeilTex->GetDC(), 0, 0,
+		(int)m_pVeilTex->Width(), (int)m_pVeilTex->Height(),
+		bf);
+
+	if (effect.fCurTime >= effect.fDuration)
+	{
+		//현재 이펙트에 대해 시간처리가 완료되었다면, 리스트에서 꺼내고 다음 효과 연출
+		m_listCamEffect.pop_front();
+	}
 }
 
 //화면 중앙값과 카메라 좌표의 차를 계산하는 함수

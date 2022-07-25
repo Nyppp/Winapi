@@ -65,7 +65,7 @@ void CAnimation::render(HDC _dc)
 
 	vPos = CCamera::GetInst()->GetRenderPos(vPos);
 
-	TransparentBlt(_dc,
+	/*TransparentBlt(_dc,
 		(int)(vPos.x - m_vecFrm[m_iCurFrm].vSlice.x / 2.f),
 		(int)(vPos.y - m_vecFrm[m_iCurFrm].vSlice.y / 2.f),
 		(int)(m_vecFrm[m_iCurFrm].vSlice.x),
@@ -75,10 +75,31 @@ void CAnimation::render(HDC _dc)
 		(int)(m_vecFrm[m_iCurFrm].vLT.y),
 		(int)(m_vecFrm[m_iCurFrm].vSlice.x),
 		(int)(m_vecFrm[m_iCurFrm].vSlice.y),
-		RGB(255, 0, 255));
+		RGB(255, 0, 255));*/
+
+		//블렌딩 함수
+	BLENDFUNCTION bf = {};
+
+	bf.BlendOp = AC_SRC_OVER;
+	bf.BlendFlags = 0;
+	bf.AlphaFormat = AC_SRC_ALPHA;
+	bf.SourceConstantAlpha = 255;
+
+	//32비트 비트맵 리소스에 대해서, 알파값을 참고하여 리소스를 그린다.
+	AlphaBlend(_dc,
+		(int)(vPos.x - m_vecFrm[m_iCurFrm].vSlice.x / 2.f),
+		(int)(vPos.y - m_vecFrm[m_iCurFrm].vSlice.y / 2.f),
+		(int)(m_vecFrm[m_iCurFrm].vSlice.x),
+		(int)(m_vecFrm[m_iCurFrm].vSlice.y),
+		m_pTex->GetDC(),
+		(int)(m_vecFrm[m_iCurFrm].vLT.x),
+		(int)(m_vecFrm[m_iCurFrm].vLT.y),
+		(int)(m_vecFrm[m_iCurFrm].vSlice.x),
+		(int)(m_vecFrm[m_iCurFrm].vSlice.y),
+		bf);
 }
 
-void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep, float _fDuration, UINT _iFrameCount)
+void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep, float _fDuration, UINT _iFrameCount, Vec2 _vOffset)
 {
 	m_pTex = _pTex;
 
@@ -89,6 +110,7 @@ void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vSte
 		frm.vSlice = _vSliceSize;
 		//i가 0부터 시작하기 때문에 첫번째는 좌상단 그대로 이어감.
 		frm.vLT = _vLT + _vStep * (int)i;
+		frm.vOffset = _vOffset;
 
 		m_vecFrm.push_back(frm);
 	}

@@ -66,7 +66,7 @@ void CScene_Start::Enter()
 	}
 	
 	//타일 로딩
-	//LoadTile(L"Tile\\Start.tile");
+	LoadTile(L"Tile\\test.tile");
 
 	//충돌 지정
 	//플레이어 그룹과 몬스터 그룹 간 충돌체크
@@ -76,6 +76,9 @@ void CScene_Start::Enter()
 
 	//기본 카메라 세팅 -> 전체 해상도의 정 중앙 위치
 	CCamera::GetInst()->SetLookAt(vResolution/2.f);
+
+	CCamera::GetInst()->FadeOut(1.f);
+	CCamera::GetInst()->FadeIn(1.f);
 }
 
 void CScene_Start::Exit()
@@ -91,7 +94,7 @@ void CScene_Start::update()
 {
 	CScene::update();
 
-	if (KEY_TAP(KEY::ENTER))
+	/*if (KEY_TAP(KEY::ENTER))
 	{
 		ChangeScene(SCENE_TYPE::TOOL);
 	}
@@ -100,7 +103,7 @@ void CScene_Start::update()
 	{
 		Vec2 vLookAt = CCamera::GetInst()->GetRealPos(MOUSE_POS);
 		CCamera::GetInst()->SetLookAt(vLookAt);
-	}
+	}*/
 }
 
 CScene_Start::CScene_Start()

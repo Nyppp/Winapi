@@ -54,6 +54,7 @@ int CCore::Init(HWND _hwnd, POINT _ptResolution)
 	CPathMgr::GetInst()->init();
 	CTimeMgr::GetInst()->init();
 	CKeyMgr::GetInst()->init();
+	CCamera::GetInst()->init();
 	CSceneMgr::GetInst()->init();
 	
 	return S_OK;
@@ -107,6 +108,7 @@ void CCore::progress()
 	//화면 전체를 지우는 목적이기 때문에 -1부터 최대값 +1까지 지우기
 	Rectangle(m_pMemTex->GetDC(), -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1);
 	CSceneMgr::GetInst()->render(m_pMemTex->GetDC()); //렌더링은 씬 매니저를 통해 그려냄
+	CCamera::GetInst()->render(m_pMemTex->GetDC());
 
 	//한 DC에 담긴 비트맵을 다른 DC에 옮겨주는 BitBlt 함수
 	BitBlt(m_hDC, 0, 0, m_ptResolution.x, m_ptResolution.y,

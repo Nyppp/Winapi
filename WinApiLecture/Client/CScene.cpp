@@ -4,6 +4,8 @@
 #include "CTile.h"
 #include "CResMgr.h"
 #include "CPathMgr.h"
+#include "CCamera.h"
+#include "CCore.h"
 
 CScene::CScene()
 	: m_iTileX(0), m_iTileY(0)
@@ -50,10 +52,18 @@ void CScene::finalupdate()
 	}
 }
 
+//씬에 존재하는 모든 오브젝트를 돌며 렌더링
+//타일 갯수가 100x100정도로 많아지면, 프레임 드랍 발생 -> 타일에 대해서는 예외처리 필요.
 void CScene::render(HDC _dc)
 {
 	for (UINT i = 0; i < (UINT)GROUP_TYPE::END; ++i)
 	{
+		if ((UINT)GROUP_TYPE::TILE == i)
+		{
+			//타일에 대해서는 전용 렌더링 함수를 사용 -> 타일은 갯수가 무수히 많을 수 있기 때문에
+			render_tile(_dc);
+			continue;
+		}
 		vector<CObject*>::iterator iter = m_arrObj[i].begin();
 
 		for (;iter != m_arrObj[i].end();)
@@ -68,6 +78,43 @@ void CScene::render(HDC _dc)
 			{
 				iter = m_arrObj[i].erase(iter);
 			}
+		}
+	}
+}
+
+void CScene::render_tile(HDC _dc)
+{
+	vector<CObject*> vecTile = GetGroupObject(GROUP_TYPE::TILE);
+
+	//카메라가 보고있는 범위 내의 타일만을 렌더링
+	Vec2 vCamLook = CCamera::GetInst()->GetLookAt(); //카메라가 보는 좌표 중앙
+	Vec2 vResoulution = CCore::GetInst()->GetResolution(); //화면 해상도
+
+	Vec2 vLeftTop = vCamLook - vResoulution / 2.f; //좌상단
+
+	int iTileSize = TILE_SIZE;
+
+	//좌상단 좌표에 가장 맨 처음으로 오는 타일의 위치가 몇행 몇열인지 계산
+	int iLTCol = (int)vLeftTop.x / iTileSize;
+	int iLTRow = (int)vLeftTop.y / iTileSize;
+
+	int iClientWidth = (int)vResoulution.x / iTileSize + 1;
+	int iClientHeight = (int)vResoulution.y / iTileSize + 1;
+
+	//현재 열과 행을 바탕으로, 해상도 범위만큼 반복하여 타일을 렌더링 한다.
+	for (int iCurRow = iLTRow; iCurRow < (iLTRow + iClientHeight); ++iCurRow)
+	{
+		for (int iCurCol = iLTCol; iCurCol < (iLTCol + iClientWidth); ++iCurCol)
+		{
+			//인덱스 범위를 초과한다면 예외처리
+			if (iCurCol < 0 || iCurCol >= m_iTileX || iCurRow < 0 || iCurRow >= m_iTileY)
+			{
+				continue;
+			}
+
+			int iIdx = (m_iTileX * iCurRow) + iCurCol;
+
+			vecTile[iIdx]->render(_dc);
 		}
 	}
 }

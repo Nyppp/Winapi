@@ -5,6 +5,8 @@ class CTexture;
 
 class CPlayer : public CObject
 {
+private:
+    Vec2 m_FireDir;
 
 public:
     virtual void update();

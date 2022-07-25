@@ -32,6 +32,8 @@ public:
 	virtual void finalupdate();
 	virtual void render(HDC _dc); //그 좌표를 기준으로 모든 물체를 그려냄
 
+	void render_tile(HDC _dc);
+
 	//Start는 순수 가상함수. -> 순수 가상함수를 포함한 클래스는 절대 객체화 될 수 없음
 	//파생 클래스들은 모두 Start를 자신만의 버전으로 구현해야 함 -> 인터페이스.
 	virtual void Enter() = 0; //해당 씬에 진입 시 호출
