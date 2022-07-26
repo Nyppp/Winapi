@@ -13,6 +13,11 @@
 #include "CSceneMgr.h"
 #include "CCamera.h"
 
+#include "AI.h"
+#include "CState.h"
+#include "CIdleState.h"
+#include "CTraceState.h"
+
 void CScene_Start::Enter()
 {
 
@@ -29,39 +34,27 @@ void CScene_Start::Enter()
 	//AddObject(pOtherPlayer, GROUP_TYPE::PLAYER);
 
 	//몬스터 오브젝트 추가
-	int iMonCount = 3;
+	int iMonCount = 1;
 
-	float fMoveDist = 25.f;
 	float fObjScale = 50.f;
 
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
-	//몬스터 사이의 간격 = (해상도x축 - (이동최대거리 + (오브젝트크기 절반)) *2) / 몬스터 갯수-1 -> 최외곽 양쪽 사이드 몬스터가 이동하는 반경을 빼고, 그 공간을 몬스터갯수 -1만큼 나눈다.
-	//몬스터가 2마리라면, 간격은 맨앞과 맨뒤로 크고, 많을수록 작아진다.
-	float fTerm = (vResolution.x - ((fMoveDist + (fObjScale / 2.f)) * 2)) / (float)(iMonCount-1);
-
-	//몬스터가 한마리면 텀 계산이 안됨 -> 0으로 처리
-	if (iMonCount == 1)
-	{
-		fTerm = 0.f;
-	}
 
 	CMonster* pMonsterObj = nullptr;
+
+	AI* pAI = new AI;
+	pAI->AddState(new CIdleState);
+	pAI->AddState(new CTraceState);
 
 	for (int i = 0; i < iMonCount; ++i)
 	{
 		CMonster* pMonsterObj = new CMonster;
-		//몬스터의 중앙 좌표 =  이동반경 + 몬스터크기 절반 + 몬스터 사이 간격*i
-		pMonsterObj->SetCenterPos(Vec2((fMoveDist + fObjScale / 2.f) + (fTerm * (float)i), 50.f));
-
-		//몬스터의 좌표를 몬스터 오브젝트에 전달(렌더링 하는것은 몬스터 오브젝트이기 떄문에)
-		//렌더링 호출 순서
-		//씬 매니저 -> 씬 -> 씬에 존재하는 오브젝트 배열 각 객체 -> 오브젝트 -> 렌더링.
-		pMonsterObj->SetPos(Vec2(pMonsterObj->GetCenterPos()));
-
-		//이동반경과 몬스터 크기를 설정해주고, 씬에 오브젝트 추가
-		pMonsterObj->SetMoveDistance(fMoveDist);
 		pMonsterObj->SetName(L"Monster");
 		pMonsterObj->SetScale(Vec2(fObjScale, fObjScale));
+		pMonsterObj->SetPos(vResolution / 2.f - Vec2(0.f, 300.f));
+		pMonsterObj->SetAI(pAI);
+
+		
 		AddObject(pMonsterObj, GROUP_TYPE::MONSTER);
 	}
 	
@@ -76,6 +69,9 @@ void CScene_Start::Enter()
 
 	//기본 카메라 세팅 -> 전체 해상도의 정 중앙 위치
 	CCamera::GetInst()->SetLookAt(vResolution/2.f);
+
+	//플레이어를 따라다니게 설정
+	CCamera::GetInst()->SetTarget(pObj);
 
 	CCamera::GetInst()->FadeOut(1.f);
 	CCamera::GetInst()->FadeIn(1.f);

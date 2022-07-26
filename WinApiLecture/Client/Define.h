@@ -57,6 +57,7 @@ enum class GROUP_TYPE
 	END = 32,
 };
 
+//씬의 종류를 담은 씬 타입 열거체
 enum class SCENE_TYPE
 {
 	TOOL,
@@ -67,12 +68,14 @@ enum class SCENE_TYPE
 	END,
 };
 
+//브러쉬 타입을 열거체로 지정
 enum class BRUSH_TYPE
 {
 	HOLLOW,
 	END,
 };
 
+//펜 타입을 열거체로 지정
 enum class PEN_TYPE
 {
 	RED,
@@ -81,10 +84,23 @@ enum class PEN_TYPE
 	END,
 };
 
+//이벤트 종류를 담은 열거체
 enum class EVENT_TYPE
 {
 	CREATE_OBJECT,
 	DELETE_OBJECT,
 	SCENE_CHANGE,
+	END,
+};
+
+//몬스터 AI에 사용할 State의 목록
+enum class MON_STATE
+{
+	IDLE,
+	PARTOL,
+	TRACE,
+	ATTACK,
+	RUN,
+	DEAD,
 	END,
 };
