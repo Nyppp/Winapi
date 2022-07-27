@@ -10,7 +10,7 @@
 
 #include <random>
 
-CMonster::CMonster() : m_fSpeed(100.f), m_iHP(5), m_pAI(nullptr)
+CMonster::CMonster() : m_tInfo{}, m_pAI(nullptr)
 {
 	//// 시드값을 얻기 위한 random_device 생성.
 	//std::random_device rd;
@@ -54,9 +54,6 @@ void CMonster::OnCollisionEnter(CCollider* _pOther)
 
 	if (pOtherObj->GetName() == L"Missile_Player")
 	{
-		--m_iHP;
 
-		if(m_iHP <= 0)
-			DeleteObject(this);
 	}
 }

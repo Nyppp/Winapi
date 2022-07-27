@@ -2,6 +2,8 @@
 
 #include "global.h"
 
+#include "CMonFactory.h"
+
 //전방선언으로 가져오는 객체는 포인터밖에 쓸 수 없음 -> 컴파일 속도에 영향을 끼치지 않기 위해서
 class CObject;
 
@@ -21,12 +23,16 @@ private:
 	UINT m_iTileX;
 	UINT m_iTileY;
 
+	//씬이 플레이어를 기억하게 함
+	CObject* m_pPlayer;
+
 public:
 	//씬 이름에 대한 getter, setter
 	void SetName(const wstring& _strName) { m_strName = _strName; }
 	const wstring& GetName() { return m_strName; }
 	UINT GetTileX() { return m_iTileX; }
 	UINT GetTileY() { return m_iTileY; }
+	CObject* GetPlayer() { return m_pPlayer; }
 
 	virtual void update(); //씬이 보유한 모든 물체 좌표값을 업데이트
 	virtual void finalupdate();
@@ -46,6 +52,8 @@ public:
 	{
 		m_arrObj[(UINT)_eType].push_back(_pObj);
 	}
+
+	void RegisterPlayer(CObject* _pPlayer) { m_pPlayer = _pPlayer; }
 
 	//참조 타입으로 반환하지 않으면 벡터 복사본을 반환해 메모리 낭비가 발생 + 원본 수정을 방지하고자 const 키워드 붙임
 	//원하는 그룹의 오브젝트 벡터를 반환하는 함수

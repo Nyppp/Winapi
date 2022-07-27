@@ -44,7 +44,7 @@ public:
 	//특정 프레임 반환
 	tAnimFrm& GetFrame(int _iIdx) { return m_vecFrm[_iIdx]; }
 
-	int GetMaxFrame() { return m_vecFrm.size(); }
+	int GetMaxFrame() { return (int)m_vecFrm.size(); }
 
 
 private:

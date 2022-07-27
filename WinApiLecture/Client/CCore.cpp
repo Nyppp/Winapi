@@ -11,26 +11,47 @@
 #include "CUIMgr.h"
 #include "CTexture.h"
 #include "CResMgr.h"
+#include "SelectGDI.h"
+#include "resource.h"
 
 //CCore* CCore::g_pInst = nullptr;
 //CObject g_obj;
+
+CCore::CCore()
+	: m_hwnd(0),
+	m_ptResolution{},
+	m_hDC(0),
+	m_pMemTex(nullptr),
+	m_arrBrush{},
+	m_arrPen{}
+{
+}
+
+CCore::~CCore()
+{
+	//init할 때 가져온 Device context를 해제함
+	ReleaseDC(m_hwnd, m_hDC);
+
+	for (int i = 0; i < (UINT)PEN_TYPE::END; ++i)
+	{
+		DeleteObject(m_arrPen[i]);
+	}
+
+	//메뉴 바 제거
+	DestroyMenu(m_hMenu);
+}
 
 int CCore::Init(HWND _hwnd, POINT _ptResolution)
 {
 	//윈도우와 그 해상도를 가져옴
 	m_hwnd = _hwnd;
 	m_ptResolution = _ptResolution;
+		
+	//윈도우 사이즈 설정
+	ChangeWindowSize(GetVecResolution(), false);
 
-	//해상도에 맞게 현재 윈도우 크기 조정
-	//50,50 위치에, 입력받은 해상도 크기 x,y 만큼의 크기를 가진 윈도우로 해상도 변경
-
-	//LPRECT == RECT 포인터 타입
-	RECT rc = {0, 0, m_ptResolution.x, m_ptResolution.y};
-
-	//윈도우 크기를 지정한 해상도 사이즈가 나오게 조정해줌, rc를 수정하기에 const pointer로 받지 않음
-	//메뉴바나, 좌우 여백을 신경써서 윈도우 크기를 보장해주기 때문에, 기존에 RECT 변수에 있던 해상도를 보장해준다.
-	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, true);
-	SetWindowPos(m_hwnd, NULL, 100, 100, rc.right - rc.left, rc.bottom - rc.top, 0);
+	//메뉴바 생성
+	m_hMenu = LoadMenu(nullptr, MAKEINTRESOURCEW(IDC_CLIENT));
 	
 	//기존 직접 해상도를 입력하여 윈도우 크기를 설정하는것보다 정확하게 해상도를 보장해줌
 	//SetWindowPos(m_hwnd, NULL, 100, 100, m_ptResolution.x, m_ptResolution.y, 0);
@@ -106,7 +127,9 @@ void CCore::progress()
 	//렌더링 -> 더블 버퍼링 사용해서 잔상 제거
 	//이전 프레임에 그려진 장면을 모두 지움
 	//화면 전체를 지우는 목적이기 때문에 -1부터 최대값 +1까지 지우기
-	Rectangle(m_pMemTex->GetDC(), -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1);
+	
+	Clear();
+
 	CSceneMgr::GetInst()->render(m_pMemTex->GetDC()); //렌더링은 씬 매니저를 통해 그려냄
 	CCamera::GetInst()->render(m_pMemTex->GetDC());
 
@@ -123,10 +146,21 @@ void CCore::progress()
 	CEventMgr::GetInst()->update();
 }
 
+void CCore::Clear()
+{
+	//바탕을 검은색으로 색칠 -> 코어 클래스의 progress 함수에 넣게 되면,
+	//GDI가 검은 브러쉬를 선택 이후 다시 기본 브러쉬로 반환하는 과정이 progress 함수가 끝날 때 동작하기에, 다른 오브젝트들이 그려지지 않음
+	//함수로 따로 선언해서 SelectGDI가 소멸자를 호출해 기본 브러쉬, 펜을 가져오도록 설계
+	SelectGDI gdi(m_pMemTex->GetDC(), BRUSH_TYPE::BLACK);
+
+	Rectangle(m_pMemTex->GetDC(), -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1);
+}
+
 void CCore::CreateBrushPen()
 {
 	//자체 설계를 위해 윈도우 함수에 의존하지 않고, 자체적으로 hollow brush 값을 받아둬서 사용
 	m_arrBrush[(UINT)BRUSH_TYPE::HOLLOW] = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+	m_arrBrush[(UINT)BRUSH_TYPE::BLACK] = (HBRUSH)GetStockObject(BLACK_BRUSH);
 
 	//RED펜
 	m_arrPen[(UINT)PEN_TYPE::RED] = (HPEN)CreatePen(PS_SOLID, 1, RGB(255,0,0));
@@ -134,24 +168,32 @@ void CCore::CreateBrushPen()
 	m_arrPen[(UINT)PEN_TYPE::BLUE] = (HPEN)CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
 }
 
-CCore::CCore() 
-	: m_hwnd(0), 
-	m_ptResolution{}, 
-	m_hDC(0),
-	m_pMemTex(nullptr),
-	m_arrBrush{},
-	m_arrPen{}
+//메뉴 바를 툴 씬에서만 나타내기 위한 함수들
+//메뉴 바가 있을 때와 없을 때의 윈도우 사이즈를 보정하는 함수
+void CCore::ChangeWindowSize(Vec2 _vResolution, bool _bMenu)
 {
+	//LPRECT == RECT 포인터 타입
+	RECT rc = { 0, 0, m_ptResolution.x, m_ptResolution.y };
 
+	//윈도우 크기를 지정한 해상도 사이즈가 나오게 조정해줌, rc를 수정하기에 const pointer로 받지 않음
+	//메뉴바나, 좌우 여백을 신경써서 윈도우 크기를 보장해주기 때문에, 기존에 RECT 변수에 있던 해상도를 보장해준다.
+	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, _bMenu);
+	SetWindowPos(m_hwnd, nullptr, 100, 100, rc.right - rc.left, rc.bottom - rc.top, 0);
 }
 
-CCore::~CCore()
+//메뉴 바 출력 함수
+void CCore::DockMenu()
 {
-	//init할 때 가져온 Device context를 해제함
-	ReleaseDC(m_hwnd, m_hDC);
-
-	for (int i = 0; i < (UINT)PEN_TYPE::END; ++i)
-	{
-		DeleteObject(m_arrPen[i]);
-	}
+	//툴 씬에서 사용할 메뉴를 불러온다.
+	SetMenu(m_hwnd, m_hMenu);
+	ChangeWindowSize(GetVecResolution(), true);
 }
+
+//메뉴 바 숨김 함수
+void CCore::DivideMenu()
+{
+	SetMenu(m_hwnd, nullptr);
+	ChangeWindowSize(GetVecResolution(), false);
+}
+
+

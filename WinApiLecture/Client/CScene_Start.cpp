@@ -27,6 +27,8 @@ void CScene_Start::Enter()
 	pObj->SetScale(Vec2(100.f, 100.f));
 	AddObject(pObj, GROUP_TYPE::PLAYER);
 
+	RegisterPlayer(pObj);
+
 	//CCamera::GetInst()->SetTarget(pObj);
 
 	//CObject* pOtherPlayer = pObj->Clone();
@@ -34,29 +36,11 @@ void CScene_Start::Enter()
 	//AddObject(pOtherPlayer, GROUP_TYPE::PLAYER);
 
 	//몬스터 오브젝트 추가
-	int iMonCount = 1;
-
-	float fObjScale = 50.f;
-
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
 
-	CMonster* pMonsterObj = nullptr;
-
-	AI* pAI = new AI;
-	pAI->AddState(new CIdleState);
-	pAI->AddState(new CTraceState);
-
-	for (int i = 0; i < iMonCount; ++i)
-	{
-		CMonster* pMonsterObj = new CMonster;
-		pMonsterObj->SetName(L"Monster");
-		pMonsterObj->SetScale(Vec2(fObjScale, fObjScale));
-		pMonsterObj->SetPos(vResolution / 2.f - Vec2(0.f, 300.f));
-		pMonsterObj->SetAI(pAI);
-
-		
-		AddObject(pMonsterObj, GROUP_TYPE::MONSTER);
-	}
+	//팩토리 패턴의 활용 -> 객체를 싱글턴처럼 생성하지 않고, 직접 바로 접근해서 함수를 사용 -> 정적 멤버함수이기에 사용 가능
+	CMonster* pMon = CMonFactory::CreateMonster(MON_TYPE::NORMAL, (vResolution / 2.f) - Vec2(0.f, 300.f));
+	AddObject(pMon, GROUP_TYPE::MONSTER);
 	
 	//타일 로딩
 	LoadTile(L"Tile\\test.tile");

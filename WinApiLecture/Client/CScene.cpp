@@ -7,8 +7,9 @@
 #include "CCamera.h"
 #include "CCore.h"
 
+
 CScene::CScene()
-	: m_iTileX(0), m_iTileY(0)
+	: m_iTileX(0), m_iTileY(0), m_pPlayer(nullptr)
 {
 }
 
@@ -107,7 +108,7 @@ void CScene::render_tile(HDC _dc)
 		for (int iCurCol = iLTCol; iCurCol < (iLTCol + iClientWidth); ++iCurCol)
 		{
 			//인덱스 범위를 초과한다면 예외처리
-			if (iCurCol < 0 || iCurCol >= m_iTileX || iCurRow < 0 || iCurRow >= m_iTileY)
+			if (iCurCol < 0 || iCurCol >= (int)m_iTileX || iCurRow < 0 || iCurRow >= (int)m_iTileY)
 			{
 				continue;
 			}
@@ -142,9 +143,9 @@ void CScene::CreateTile(UINT _iXCount, UINT _iYCount)
 	m_iTileX = _iXCount;
 	m_iTileY = _iYCount;
 
-	for (int i = 0; i < _iYCount; ++i)
+	for (int i = 0; i < (int)_iYCount; ++i)
 	{
-		for (int j = 0; j < _iXCount; ++j)
+		for (int j = 0; j < (int)_iXCount; ++j)
 		{
 			CTile* pTile = new CTile();
 

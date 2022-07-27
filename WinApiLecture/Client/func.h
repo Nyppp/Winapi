@@ -1,6 +1,7 @@
 #pragma once
 
 class CObject;
+class AI;
 
 //자주 수행되는 코드를 정의한 func 헤더
 
@@ -12,6 +13,8 @@ void CreateObject(CObject* _pObj, GROUP_TYPE _eGROUP);
 void DeleteObject(CObject* _pObj);
 
 void ChangeScene(SCENE_TYPE _eNext);
+
+void ChangeAIState(AI* _pAI, MON_STATE _eNextState);
 
 
 //템플릿 벡터 원소 삭제를 위한 함수

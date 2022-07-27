@@ -72,6 +72,7 @@ enum class SCENE_TYPE
 enum class BRUSH_TYPE
 {
 	HOLLOW,
+	BLACK,
 	END,
 };
 
@@ -90,6 +91,7 @@ enum class EVENT_TYPE
 	CREATE_OBJECT,
 	DELETE_OBJECT,
 	SCENE_CHANGE,
+	CHANGE_AISTATE,
 	END,
 };
 

@@ -44,6 +44,8 @@ void CScene_Tool::update()
 
 void CScene_Tool::Enter()
 {
+	CCore::GetInst()->DockMenu();
+
 	CreateTile(5, 5);
 
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
@@ -98,6 +100,8 @@ void CScene_Tool::Enter()
 
 void CScene_Tool::Exit()
 {
+	CCore::GetInst()->DivideMenu();
+
 	DeleteAll();
 }
 
@@ -121,8 +125,8 @@ void CScene_Tool::SetTileIdx()
 
 		//마우스 좌표가 음수 -> 0번째 타일에 대해 살짝 옆으로 가서 음수 위치에서 클릭하면,
 		//iCol이 음수여도 0이 되기에  마우스 자체 좌표가 음수인지 체크하여 판단
-		if (vMousePos.x < 0.f || iCol >= iTileX
-			|| vMousePos.y < 0.f || iRow >= iTileY)
+		if (vMousePos.x < 0.f || (UINT)iCol >= iTileX
+			|| vMousePos.y < 0.f || (UINT)iRow >= iTileY)
 		{
 			return;
 		}

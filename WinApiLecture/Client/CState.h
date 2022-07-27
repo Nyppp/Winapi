@@ -1,6 +1,7 @@
 #pragma once
 
 class AI;
+class CMonster;
 
 class CState
 {
@@ -11,6 +12,7 @@ private:
 public:
 	AI* GetAI() { return m_pAI; }
 	MON_STATE GetType() { return m_eState; }
+	CMonster* GetMonster();
 
 public:
 	//해당 기능은 각 스테이트가 직접 구현하기 위해서 인터페이스로 만듦	

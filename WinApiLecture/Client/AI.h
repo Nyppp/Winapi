@@ -1,7 +1,6 @@
 #pragma once
-
-class CMonster;
 class CState;
+class CMonster;
 
 class AI
 {
@@ -16,6 +15,12 @@ public:
 public:
 	void AddState(CState* _pState);
 	CState* GetState(MON_STATE _eState);
+
+	CMonster* GetOwner() { return m_pOwner; }
+
+	void SetCurState(MON_STATE _eState);
+
+	void ChangeState(MON_STATE _eNextState);
 
 
 public:
