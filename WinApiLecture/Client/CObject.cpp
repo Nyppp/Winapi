@@ -4,9 +4,10 @@
 #include "CTimeMgr.h"
 #include "CCollider.h"
 #include "CAnimator.h"
+#include "CRigidBody.h"
 #include "CCamera.h"
 
-CObject::CObject() : m_vPos{}, m_vScale{}, m_pCollider(nullptr), m_bAlive(true), m_pAnimator(nullptr)
+CObject::CObject() : m_vPos{}, m_vScale{}, m_pCollider(nullptr), m_bAlive(true), m_pAnimator(nullptr), m_pRigidBody(nullptr)
 {
 }
 
@@ -14,7 +15,7 @@ CObject::CObject(const CObject& _origin)
 	: m_strName(_origin.m_strName),
 	m_vPos(_origin.m_vPos),
 	m_vScale(_origin.m_vScale),
-	m_pCollider(nullptr), m_pAnimator(nullptr), m_bAlive(true)
+	m_pCollider(nullptr), m_pAnimator(nullptr), m_bAlive(true), m_pRigidBody(nullptr)
 {
 	//복사한 객체가 콜라이더가 있을 경우에만 콜라이더 깊은 복사
 	//콜라이더의 경우에는, 두 오브젝트가 한 콜라이더를 동시에 가리키게 되면 문제 발생함.(텍스쳐와는 다른 경우)
@@ -32,6 +33,12 @@ CObject::CObject(const CObject& _origin)
 		m_pAnimator = new CAnimator(*_origin.m_pAnimator);
 		m_pAnimator->m_pOwner = this;
 	}
+
+	if (_origin.m_pRigidBody != nullptr)
+	{
+		m_pRigidBody = new CRigidBody(*_origin.m_pRigidBody);
+		m_pRigidBody->m_pOwner = this;
+	}
 }
 
 CObject::~CObject()
@@ -42,16 +49,23 @@ CObject::~CObject()
 
 	if (m_pAnimator != nullptr)
 		delete m_pAnimator;
+
+	if (m_pRigidBody != nullptr)
+		delete m_pRigidBody;
 }
 
 void CObject::finalupdate()
 {
 	//오브젝트 단위의 업데이트(이동, 렌더링)을 마치면, 그 다음에는 콜라이더, 애니메이션 처리
-	if (m_pCollider)
+	if (m_pCollider != nullptr)
 		m_pCollider->finalupdate();
 
-	if (m_pAnimator)
+	if (m_pAnimator != nullptr)
 		m_pAnimator->finalupdate();
+
+	if (m_pRigidBody != nullptr)
+		m_pRigidBody->finalupdate();
+	
 }
 
 //오브젝트가 자기 자신을 그려냄
@@ -78,6 +92,7 @@ void CObject::component_render(HDC _dc)
 	{
 		m_pAnimator->render(_dc);
 	}
+
 }
 
 void CObject::CreateCollider()
@@ -90,6 +105,12 @@ void CObject::CreateAnimator()
 {
 	m_pAnimator = new CAnimator;
 	m_pAnimator->m_pOwner = this;
+}
+
+void CObject::CreateRigidBody()
+{
+	m_pRigidBody = new CRigidBody;
+	m_pRigidBody->m_pOwner = this;
 }
 
 void CObject::OnCollision(CCollider* _pOther)

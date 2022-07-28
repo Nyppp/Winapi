@@ -5,6 +5,7 @@
 
 class CCollider;
 class CAnimator;
+class CRigidBody;
 
 class CObject
 {
@@ -18,6 +19,7 @@ private:
 	//컴포넌트
 	CCollider* m_pCollider;
 	CAnimator* m_pAnimator;
+	CRigidBody* m_pRigidBody;
 
 	bool m_bAlive;
 
@@ -42,6 +44,7 @@ public:
 
 	CCollider* GetCollider() { return m_pCollider; }
 	CAnimator* GetAnimator() { return m_pAnimator; }
+	CRigidBody* GetRigidBody() { return m_pRigidBody; }
 
 public:
 	//가상함수에 = 0 을 붙이면, 무조건 자식 오브젝트에서의 오버라이딩 으로만 정의를 할 수 있음
@@ -73,6 +76,7 @@ private:
 public:
 	void CreateCollider();
 	void CreateAnimator();
+	void CreateRigidBody();
 
 	virtual void OnCollision(CCollider* _pOther);
 	virtual void OnCollisionEnter(CCollider* _pOther);

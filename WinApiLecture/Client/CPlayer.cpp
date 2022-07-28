@@ -12,14 +12,17 @@
 #include "CCollider.h"
 #include "CAnimator.h"
 #include "CAnimation.h"
+#include "CRigidBody.h"
 
 CPlayer::CPlayer() : m_FireDir(0.f, -1.f)
 {
+	//콜라이더 지정
 	CreateCollider();
-
 	//오프셋을 주면, 오프셋 만큼 콜라이더 중심 좌표가 변경됨
 	GetCollider()->SetOffsetPos(Vec2(0.f, -20.f));
 	GetCollider()->SetScale(Vec2(20.f, 50.f));
+
+	CreateRigidBody();
 
 	//텍스쳐 로딩
 	CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\Animation\\Link.bmp");
@@ -46,37 +49,53 @@ void CPlayer::update()
 {
 	Vec2 vPos = GetPos();
 
+	CRigidBody* pRigid = GetRigidBody();
+
 	//상, 하, 좌, 우 이동에 대한 처리 -> 오브젝트 좌표에 시간값 * 이동속도를 더하여 위치를 옮긴다.
 	if (KEY_HOLD(KEY::W))
 	{
-		vPos.y -= 200.f * fDT;
+		//1. 트랜스폼을 사용한 오브젝트 이동
+		//vPos.y -= 200.f * fDT;
+		
+		//2. 리지드바디를 사용한 오브젝트 이동
+		pRigid->AddForce(Vec2(0.f, -200.f));
+
+		//걷는 방향에 맞는 애니메이션 재생
+		GetAnimator()->Play(L"WALK_UP", true);
+
+		//미사일 발사 방향 지정
 		m_FireDir.x = 0.f;
 		m_FireDir.y = -1.f;
-		GetAnimator()->Play(L"WALK_UP", true);
 	}
 
 	if (KEY_HOLD(KEY::S))
 	{
-		vPos.y += 200.f * fDT;
+		//vPos.y += 200.f * fDT;
+		pRigid->AddForce(Vec2(0.f, 200.f));
+		GetAnimator()->Play(L"WALK_DOWN", true);
+
 		m_FireDir.x = 0.f;
 		m_FireDir.y = 1.f;
-		GetAnimator()->Play(L"WALK_DOWN", true);
 	}
 
 	if (KEY_HOLD(KEY::A))
 	{
-		vPos.x -= 200.f * fDT;
+		//vPos.x -= 200.f * fDT;
+		pRigid->AddForce(Vec2(-200.f, 0.f));
+		GetAnimator()->Play(L"WALK_LEFT", true);
+
 		m_FireDir.x = -1.f;
 		m_FireDir.y = 0.f;
-		GetAnimator()->Play(L"WALK_LEFT", true);
 	}
 
 	if (KEY_HOLD(KEY::D))
 	{
-		vPos.x += 200.f * fDT;
+		//vPos.x += 200.f * fDT;
+		pRigid->AddForce(Vec2(200.f, 0.f));
+		GetAnimator()->Play(L"WALK_RIGHT", true);
+
 		m_FireDir.x = 1.f;
 		m_FireDir.y = 0.f;
-		GetAnimator()->Play(L"WALK_RIGHT", true);
 	}
 
 	//미사일 발사 처리 -> 스페이스바가 눌리면, 미사일 생성 함수 실행
@@ -91,7 +110,7 @@ void CPlayer::update()
 	}
 
 
-	SetPos(vPos);
+	//SetPos(vPos);
 
 	//GetAnimator()->update();
 }
