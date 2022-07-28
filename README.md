@@ -6,6 +6,10 @@
 
 참고 영상 (https://www.youtube.com/playlist?list=PL4SIC1d_ab-ZLg4TvAO5R4nqlJTyJXsPK)<br><br>
 
+# 클래스 다이어그램
+![image](https://user-images.githubusercontent.com/63279872/181499567-e94ef99a-ab28-4bdc-929d-5c81f1171b16.png)
+
+
 # 구현 기능
 
 1. 윈도우 API 프로그램의 메시지 Peek 방식을 사용해 메시지 처리 동작이 없을 때, 게임 코드 부분 업데이트(Core 클래스)<br>
