@@ -41,9 +41,7 @@ CPlayer::CPlayer() : m_FireDir(0.f, -1.f)
 
 CPlayer::~CPlayer()
 {
-
 }
-
 
 void CPlayer::update()
 {
@@ -96,6 +94,24 @@ void CPlayer::update()
 
 		m_FireDir.x = 1.f;
 		m_FireDir.y = 0.f;
+	}
+
+	//처음 누른 경우, 보정 속도로 초기 속도 100.f만큼의 값을 준다.
+	if (KEY_TAP(KEY::W))
+	{
+		pRigid->AddForce(Vec2(0.f, -100.f));
+	}
+	if (KEY_TAP(KEY::S))
+	{
+		pRigid->AddForce(Vec2(0.f, 100.f));
+	}
+	if (KEY_TAP(KEY::A))
+	{
+		pRigid->AddForce(Vec2(-100.f, 0.f));
+	}
+	if (KEY_TAP(KEY::D))
+	{
+		pRigid->AddForce(Vec2(100.f, 0.f));
 	}
 
 	//미사일 발사 처리 -> 스페이스바가 눌리면, 미사일 생성 함수 실행

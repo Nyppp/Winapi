@@ -1,5 +1,6 @@
 #pragma once
 
+//2D 좌표계에서 사용될 벡터 구조체 -> 화면의 좌표를 나타낸다.
 struct Vec2
 {
 	float x;
@@ -44,6 +45,7 @@ public:
 		y = (float)_pt.y;
 	}
 
+	//벡터 구조체에 대한 연산자 오버로딩
 	Vec2 operator + (Vec2 _pt)
 	{
 		return Vec2(x + _pt.x, y + _pt.y);
@@ -87,17 +89,34 @@ public:
 		return Vec2(x / _f, y / _f);
 	}
 
-	Vec2 operator += (Vec2 _pt)
+	Vec2 operator -()
+	{
+		return Vec2(-x, -y);
+	}
+
+	void operator += (Vec2 _pt)
 	{
 		x += _pt.x;
 		y += _pt.y;
+	}
 
-		return Vec2(x, y);
+	void operator -= (Vec2 _pt)
+	{
+		x -= _pt.x;
+		y -= _pt.y;
+	}
+
+	void operator *= (float _f)
+	{
+		x *= _f;
+		y *= _f;
 	}
 
 public:
 	Vec2() : x(0.f), y(0.f) {}
 	Vec2(float _x, float _y) : x(_x), y(_y) {}
+
+	//벡터 구조체에 대한 복사 생성자
 
 	//벡터 값은 데이터 상으로는 실수 이지만, 윈도우 환경으로 인자를 전달할 때는 정수타입.
 	//정수를 입력받았을 때의 구조체 생성자를 통해 타입 캐스팅을 하면 된다.

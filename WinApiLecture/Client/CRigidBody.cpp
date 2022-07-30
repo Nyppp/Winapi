@@ -4,7 +4,8 @@
 #include "CTimeMgr.h"
 
 CRigidBody::CRigidBody()
-	: m_pOwner(nullptr), m_fMass(1.f)
+	//기본값 -> 질량 1 / 최대 속도 200.f/ 마찰계수 100.f
+	: m_pOwner(nullptr), m_fMass(1.f), m_fMaxSpeed(200.f), m_fFricCoeff(100.f)
 {
 }
 
@@ -26,6 +27,31 @@ void CRigidBody::finalupdate()
 
 		m_vVelocity += m_vAccel * fDT; //속도 -> 가속도 만큼 계속해서 더하면, 가속도 운동에 의한 속도가 계산됨 (V = a + dt)
 	}
+
+	//마찰력 적용한 반대 방향으로의 가속도
+	if (m_vVelocity.IsZero() != true) //힘이 들어오지 않았지만 속도는 0이 아닌 경우에 동작(코드로 속도 입력)
+	{
+		Vec2 vFricDir = m_vVelocity;
+		Vec2 vFriction = -vFricDir.normalize() * m_fFricCoeff * fDT;
+		if (m_vVelocity.Length() <= vFriction.Length())
+		{
+			//마찰 가속도가 힘보다 클 때(밀리지 않음)
+			m_vVelocity = Vec2(0.f, 0.f);
+		}
+		else
+		{
+			//그 외에는, 밀림
+			m_vVelocity += vFriction;
+		}
+
+		//최대 속도가 넘어가면 속도 조정
+		if (m_vVelocity.Length() > m_fMaxSpeed)
+		{
+			m_vVelocity.normalize();
+			m_vVelocity *= m_fMaxSpeed;
+		}
+	}
+
 	Move();
 	//힘을 전달한 뒤에는 힘의 값을 0으로 만든다 -> 이미 힘을 줘서 밀어냈기에
 	m_vForce = Vec2(0.f, 0.f);
