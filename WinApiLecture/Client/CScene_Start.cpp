@@ -18,6 +18,20 @@
 #include "CIdleState.h"
 #include "CTraceState.h"
 
+#include "CRigidBody.h"
+#include "SelectGDI.h"
+#include "CTimeMgr.h"
+
+CScene_Start::CScene_Start() : m_bUseForce(false), m_fForceRadius(300.f), m_fCurRadius(0.f), m_fForce(300.f)
+{
+}
+
+CScene_Start::~CScene_Start()
+{
+}
+
+
+
 void CScene_Start::Enter()
 {
 
@@ -43,7 +57,7 @@ void CScene_Start::Enter()
 	AddObject(pMon, GROUP_TYPE::MONSTER);
 	
 	//타일 로딩
-	LoadTile(L"Tile\\test.tile");
+	//LoadTile(L"Tile\\test.tile");
 
 	//충돌 지정
 	//플레이어 그룹과 몬스터 그룹 간 충돌체크
@@ -72,7 +86,7 @@ void CScene_Start::Exit()
 
 void CScene_Start::update()
 {
-	CScene::update();
+	//CScene::update();
 
 	/*if (KEY_TAP(KEY::ENTER))
 	{
@@ -84,12 +98,85 @@ void CScene_Start::update()
 		Vec2 vLookAt = CCamera::GetInst()->GetRealPos(MOUSE_POS);
 		CCamera::GetInst()->SetLookAt(vLookAt);
 	}*/
+
+	if (KEY_HOLD(KEY::LBTN))
+	{
+		m_bUseForce = true;
+		CreateForce();
+	}
+	else
+	{
+		m_bUseForce = false;
+		m_fCurRadius = 0.f;
+	}
+
+	//리지드바디 동작을 위해 스타트 씬에서 자체적으로 오브젝트 업데이트
+	for (UINT i = 0; i < (UINT)GROUP_TYPE::END; ++i)
+	{
+		const vector<CObject*>& vecObj = GetGroupObject((GROUP_TYPE)i);
+		for (size_t j = 0; j < vecObj.size(); ++j)
+		{
+			if (vecObj[j]->IsDead() == false)
+			{
+				if (m_bUseForce && vecObj[j]->GetRigidBody())
+				{
+					//마우스 좌표와 오브젝트 좌표 차이를 구하고,
+					Vec2 vDiff = vecObj[j]->GetPos() - m_vForcePos;
+					float fLen = vDiff.Length();
+
+					//오브젝트 좌표가 힘의 범위 안에 존재할 때,
+					if (fLen < m_fForceRadius)
+					{
+						//힘의 중심으로부터 얼마나 떨어져 있는지 비율을 구하고, 그 비율만큼 힘을 준다.
+						float fRatio = 1.f - (fLen / m_fForceRadius);
+						float fForce = m_fForce * fRatio;
+
+						//힘의 비율과 방향을 가지고 오브젝트에 힘을 전달한다
+						vecObj[j]->GetRigidBody()->AddForce(vDiff.normalize() * fForce);
+					}
+				}
+				vecObj[j]->update();
+			}
+		}
+	}
 }
 
-CScene_Start::CScene_Start()
+void CScene_Start::render(HDC _dc)
 {
+	//기존 씬 렌더링 동작
+	CScene::render(_dc);
+
+	//리지드바디를 시각적으로 표현하기 위한 동작
+	if (m_bUseForce == false)
+	{
+		return;
+	}
+	
+	//펜, 브러쉬 가져옴
+	SelectGDI gdiBrush(_dc, BRUSH_TYPE::HOLLOW);
+	SelectGDI gdiPen(_dc, PEN_TYPE::GREEN);
+
+	//원형으로 그리는데, 마우스 클릭 지점부터 1000.f의 둘레를 가진 원이 될 때 까지 퍼져나감
+	m_fCurRadius += m_fForceRadius * 3.f * fDT;
+	if (m_fCurRadius > m_fForceRadius)
+	{
+		m_fCurRadius = 0.f;
+	}
+
+	Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(m_vForcePos);
+
+	Ellipse(_dc, 
+		(vRenderPos.x - m_fCurRadius),
+		(vRenderPos.y - m_fCurRadius),
+		(vRenderPos.x + m_fCurRadius),
+		(vRenderPos.y + m_fCurRadius));
+
 }
 
-CScene_Start::~CScene_Start()
+void CScene_Start::CreateForce()
 {
+	m_vForcePos = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+
+
 }
+
