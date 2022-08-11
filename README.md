@@ -1,8 +1,8 @@
 # Winapi
 
 윈도우 API를 이용해 기본 게임 프레임워크를 구현한 프로젝트 입니다.<br>
-
-참고 영상 (https://www.youtube.com/playlist?list=PL4SIC1d_ab-ZLg4TvAO5R4nqlJTyJXsPK)<br><br>
+간략한 설명 영상 : https://www.youtube.com/watch?v=N38rCheOXPo&ab_channel=Re%3Amake
+<br><br>
 
 # 클래스 다이어그램
 ![image](https://user-images.githubusercontent.com/63279872/181499567-e94ef99a-ab28-4bdc-929d-5c81f1171b16.png)
